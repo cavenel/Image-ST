@@ -8,4 +8,4 @@ title: "A nextflow pipeline to run the end-to-end image-based in-situ sequencing
 version: 0.0.1
 date-released: 2024-08-18
 license: Apache-2.0
-/*url: "https://github.com/BioinfoTongLI/"*/
+url: "https://github.com/BioinfoTongLI/"
