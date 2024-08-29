@@ -1,0 +1,2 @@
+subworkflows/postcode_decoding:
+  - subworkflows/sanger/postcode_decoding/**

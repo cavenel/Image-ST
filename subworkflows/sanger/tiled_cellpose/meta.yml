@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "tiled_cellpose"
+description: A tiled version of CellPose to faciliate processing of large images on HPC
+keywords:
+  - cellpose
+  - segmentation
+  - instance segmentation
+  - deep-learning
+## TODO nf-core: Add a list of the modules and/or subworkflows used in the subworkflow
+components:
+  - 
+input:
+  - images:
+      type: file
+      description: |
+        The input channel containing the image files
+        Structure: [ val(meta), path(image) ]
+      pattern: "*.{tif/tiff}"
+output:
+  - csi:
+      type: file
+      description: |
+        2D segmentation polygons in wkt format
+        Structure: [ val(meta), path(wkt) ]
+      pattern: "*.wkt"
+  - versions:
+      type: file
+      description: |
+        File containing software versions
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

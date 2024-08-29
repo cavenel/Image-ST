@@ -1,0 +1,46 @@
+{
+  "name": "",
+  "homePage": "",
+  "repos": {
+    "git@github.com:BioinfoTongLI/modules.git": {
+      "modules": {
+        "sanger": {
+          "bioinfotongli/extractpeakprofile": {
+            "branch": "develop",
+            "git_sha": "1077b0d23d7f56604b058581a3f6ff42560601a4",
+            "installed_by": ["modules"]
+          },
+          "bioinfotongli/microaligner": {
+            "branch": "develop",
+            "git_sha": "7a0d49edac1d6369ece6d8d20a6c0f9e4290b327",
+            "installed_by": ["modules"]
+          }
+        }
+      },
+      "subworkflows": {
+        "sanger": {
+          "microaligner_registration": {
+            "branch": "develop",
+            "git_sha": "83cd5caf622afc6c0e41be1f183a6c9f271107ac",
+            "installed_by": ["subworkflows"]
+          },
+          "postcode_decoding": {
+            "branch": "develop",
+            "git_sha": "c75b226244dcd259ccf0eabb3a91332e4e01090b",
+            "installed_by": ["subworkflows"]
+          },
+          "tiled_cellpose": {
+            "branch": "develop",
+            "git_sha": "7179e6c041e0a0705ae335e6d0b800e57ee3630a",
+            "installed_by": ["subworkflows"]
+          },
+          "tiled_spotiflow": {
+            "branch": "develop",
+            "git_sha": "e5fece5ec0bca4e88668a7d4ef735b68692b85f8",
+            "installed_by": ["subworkflows"]
+          }
+        }
+      }
+    }
+  }
+}

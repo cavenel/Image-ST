@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "postcode_decoding"
+description: Decode peaks from spatial transcriptomics data using PoSTcode
+keywords:
+  - decoding
+  - spatial transcriptomics
+  - ISS
+  - MERFISH
+  - GMM
+components:
+  - 
+input:
+  - meta:
+      type: file
+      description: |
+        The input channel containing the BAM/CRAM/SAM files
+        Structure: [ val(meta), path(bam) ]
+      pattern: "*.{bam/cram/sam}"
+  - peak_profiles:
+      type: file
+      description: |
+        The extracted peak profiles from the image with shape (n_peaks, n_channels)
+        Or (n_peaks, n_channels, n_rounds)
+        Structure: [ val(meta), path(peak_profiles) ]
+      pattern: "*.{xlsx/csv}"
+  - peak_loc:
+      type: file
+      description: |
+        The corresponding peak locations of the extracted peak profiles
+        Structure: [ val(meta), path(codebook) ]
+      pattern: "*.{xlsx/csv}"
+  - codebook:
+      type: file
+      description: |
+        Codebook to support decoding
+        Structure: [ val(meta), path(codebook) ]
+      pattern: "*.{xlsx/csv}" 
+output:
+  - decoded_peaks:
+      type: file
+      description: |
+        decoded_peaks using PoSTcode
+        Structure: [ val(meta), path(csv) ]
+      pattern: "*.csv"
+  - versions:
+      type: file
+      description: |
+        File containing software versions
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+authors:
+  - "@BioinfoTongLI"
+maintainers:
+  - "@BioinfoTongLI"

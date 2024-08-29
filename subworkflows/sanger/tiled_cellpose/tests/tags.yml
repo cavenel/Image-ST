@@ -1,0 +1,2 @@
+subworkflows/tiled_cellpose:
+  - subworkflows/sanger/tiled_cellpose/**
