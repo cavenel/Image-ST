@@ -12,7 +12,7 @@
           },
           "bioinfotongli/microaligner": {
             "branch": "develop",
-            "git_sha": "7a0d49edac1d6369ece6d8d20a6c0f9e4290b327",
+            "git_sha": "343a7fc64e77d22e19877aa47023131b9674e939",
             "installed_by": ["modules"]
           }
         }
@@ -21,7 +21,7 @@
         "sanger": {
           "microaligner_registration": {
             "branch": "develop",
-            "git_sha": "83cd5caf622afc6c0e41be1f183a6c9f271107ac",
+            "git_sha": "343a7fc64e77d22e19877aa47023131b9674e939",
             "installed_by": ["subworkflows"]
           },
           "postcode_decoding": {

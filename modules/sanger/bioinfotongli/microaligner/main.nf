@@ -15,9 +15,10 @@ process BIOINFOTONGLI_MICROALIGNER {
 
     input:
     tuple val(meta), path(config), path(images)
+    val(method) // either feature or optflow
 
     output:
-    tuple val(meta), path("${prefix}*_reg_result_stack.tif"), emit: registered_image
+    tuple val(meta), path("${prefix}_${method}_reg_result_stack.tif"), emit: registered_image
     path "versions.yml"           , emit: versions
 
     when:

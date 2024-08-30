@@ -125,17 +125,18 @@ process Decode_peaks {
     val(chunk_size)
 
     output:
-    tuple val(meta), path("${prefix}_decoded_df.tsv"), emit:decoded_peaks
+    tuple val(meta), path("${out_name}"), emit:decoded_peaks
     tuple val(meta), path("${prefix}_decode_out_parameters.pickle"), optional: true
 
     path "versions.yml"           , emit: versions
 
     script:
     prefix = meta.id ?: "none_decoded"
+    out_name = "${prefix}_decoded_spots.csv"
     def args = task.ext.args ?: ""
     """
     /scripts/decode.py run --spot_profile_p ${spot_profile} --spot_locations_p ${spot_loc} \\
-        --codebook_p ${codebook} --stem ${prefix} --chunk_size ${chunk_size} --readouts_csv ${readouts} \\
+        --codebook_p ${codebook} --out_name ${out_name} --readouts_csv ${readouts} \\
         ${args}
 
     cat <<-END_VERSIONS > versions.yml
