@@ -1,46 +1,58 @@
 {
-  "name": "",
-  "homePage": "",
-  "repos": {
-    "git@github.com:BioinfoTongLI/modules.git": {
-      "modules": {
-        "sanger": {
-          "bioinfotongli/extractpeakprofile": {
-            "branch": "develop",
-            "git_sha": "1077b0d23d7f56604b058581a3f6ff42560601a4",
-            "installed_by": ["modules"]
-          },
-          "bioinfotongli/microaligner": {
-            "branch": "develop",
-            "git_sha": "343a7fc64e77d22e19877aa47023131b9674e939",
-            "installed_by": ["modules"]
-          }
+    "name": "",
+    "homePage": "",
+    "repos": {
+        "git@github.com:BioinfoTongLI/modules.git": {
+            "modules": {
+                "sanger": {
+                    "bioinfotongli/extractpeakprofile": {
+                        "branch": "develop",
+                        "git_sha": "1077b0d23d7f56604b058581a3f6ff42560601a4",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "bioinfotongli/microaligner": {
+                        "branch": "develop",
+                        "git_sha": "343a7fc64e77d22e19877aa47023131b9674e939",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    }
+                }
+            },
+            "subworkflows": {
+                "sanger": {
+                    "microaligner_registration": {
+                        "branch": "develop",
+                        "git_sha": "343a7fc64e77d22e19877aa47023131b9674e939",
+                        "installed_by": [
+                            "subworkflows"
+                        ]
+                    },
+                    "postcode_decoding": {
+                        "branch": "develop",
+                        "git_sha": "c48417d116524336f06981fdc8e45ad882e4f195",
+                        "installed_by": [
+                            "subworkflows"
+                        ]
+                    },
+                    "tiled_cellpose": {
+                        "branch": "develop",
+                        "git_sha": "7179e6c041e0a0705ae335e6d0b800e57ee3630a",
+                        "installed_by": [
+                            "subworkflows"
+                        ]
+                    },
+                    "tiled_spotiflow": {
+                        "branch": "develop",
+                        "git_sha": "14561c29bce2476c2b49ea194149bf8d46380a79",
+                        "installed_by": [
+                            "subworkflows"
+                        ]
+                    }
+                }
+            }
         }
-      },
-      "subworkflows": {
-        "sanger": {
-          "microaligner_registration": {
-            "branch": "develop",
-            "git_sha": "343a7fc64e77d22e19877aa47023131b9674e939",
-            "installed_by": ["subworkflows"]
-          },
-          "postcode_decoding": {
-            "branch": "develop",
-            "git_sha": "c48417d116524336f06981fdc8e45ad882e4f195",
-            "installed_by": ["subworkflows"]
-          },
-          "tiled_cellpose": {
-            "branch": "develop",
-            "git_sha": "7179e6c041e0a0705ae335e6d0b800e57ee3630a",
-            "installed_by": ["subworkflows"]
-          },
-          "tiled_spotiflow": {
-            "branch": "develop",
-            "git_sha": "14561c29bce2476c2b49ea194149bf8d46380a79",
-            "installed_by": ["subworkflows"]
-          }
-        }
-      }
     }
-  }
 }
