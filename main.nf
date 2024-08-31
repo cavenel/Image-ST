@@ -41,7 +41,7 @@ workflow {
             file(readouts, type:'file')]
         }
         POSTCODE(EXTRACT_PEAK_PROFILE.out.peak_profile.join(codebook))
-        transcripts = POSTCODE_DECODING.out.decoded_peaks
+        transcripts = POSTCODE.out.decoded_peaks
     } else {
         // Just use the spots
         transcripts = TILED_SPOTIFLOW.out.spots_csv
