@@ -56,7 +56,7 @@ process CELLPOSE {
         "tiled_cellpose:${container_version}":
         "tiled_cellpose:${container_version}"}"
 
-    publishDir params.out_dir + "/cellpose_segmentation", mode: 'copy'
+    publishDir params.out_dir + "/naive_cellpose_segmentation"
 
     input:
     tuple val(meta), val(x_min), val(y_min), val(x_max), val(y_max), path(image), val(cell_diameter)
@@ -101,7 +101,7 @@ process MERGE_OUTLINES {
         "tiled_cellpose:${container_version}":
         "tiled_cellpose:${container_version}"}"
 
-    publishDir params.out_dir + "/cellpose_segmentation_outlines", mode: 'copy'
+    publishDir params.out_dir + "/cellpose_segmentation_merged_wkt"
 
     input:
     tuple val(meta), val(cell_diameter), path(wkts)

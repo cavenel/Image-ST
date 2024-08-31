@@ -118,7 +118,7 @@ process Decode_peaks {
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'bioinfotongli/postcode:latest':
         'bioinfotongli/postcode:latest'}"
-    publishDir params.out_dir + "/decoded", mode:"copy"
+    publishDir params.out_dir + "/decoded"
 
     input:
     tuple val(meta), file(spot_profile), file(spot_loc), file(codebook), file(readouts)

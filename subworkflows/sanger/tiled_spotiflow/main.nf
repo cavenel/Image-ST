@@ -14,7 +14,7 @@ process Spotiflow_call_peaks {
         "tiled_spotiflow:${container_version}":
         "tiled_spotiflow:${container_version}"}"
     containerOptions "${workflow.containerEngine == 'singularity' ? '--nv':'--gpus all'}"
-    publishDir params.out_dir + "/spotiflow_peaks", mode: 'copy'
+    publishDir params.out_dir + "/spotiflow_peaks"
 
     input:
     tuple val(meta), path(img), val(ch_ind)
@@ -47,7 +47,7 @@ process Spotiflow_merge_peaks {
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         "tiled_spotiflow:${container_version}":
         "tiled_spotiflow:${container_version}"}"
-    publishDir params.out_dir + "/spotiflow_peaks", mode: 'copy'
+    publishDir params.out_dir + "/spotiflow_peaks"
 
     input:
     tuple val(meta), path(csvs), val(ch_ind)
@@ -80,7 +80,7 @@ process Spotiflow_merge_channels {
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         "tiled_spotiflow:${container_version}":
         "tiled_spotiflow:${container_version}"}"
-    publishDir params.out_dir + "/spotiflow_peaks", mode: 'copy'
+    publishDir params.out_dir + "/spotiflow_peaks"
 
     input:
     tuple val(meta), path(wkts)

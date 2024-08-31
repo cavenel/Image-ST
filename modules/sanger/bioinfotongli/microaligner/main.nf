@@ -11,7 +11,7 @@ process BIOINFOTONGLI_MICROALIGNER {
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         "bioinfotongli/microaligner:${VERSION}" :
         "bioinfotongli/microaligner:${VERSION}" }"
-    publishDir params.out_dir + "/registered_stacks", mode: 'copy'
+    publishDir params.out_dir + "/registered_stacks"
 
     input:
     tuple val(meta), path(config), path(images)
