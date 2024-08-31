@@ -14,17 +14,17 @@
             "branch": "develop",
             "git_sha": "0470cd1c31429f2a7f62fd624a7e6b9abfd3902e",
             "installed_by": ["modules"]
+          },
+          "postcode": {
+            "branch": "develop",
+            "git_sha": "b10ce5d71d7f22a6e141976a00756294d82c17c1",
+            "installed_by": ["modules"]
           }
         }
       },
       "subworkflows": {
         "sanger": {
           "microaligner_registration": {
-            "branch": "develop",
-            "git_sha": "0470cd1c31429f2a7f62fd624a7e6b9abfd3902e",
-            "installed_by": ["subworkflows"]
-          },
-          "postcode_decoding": {
             "branch": "develop",
             "git_sha": "0470cd1c31429f2a7f62fd624a7e6b9abfd3902e",
             "installed_by": ["subworkflows"]

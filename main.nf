@@ -4,8 +4,8 @@ include { REGISTER_AS_SPATIALDATA } from './subworkflows/registration'
 include { MICRO_ALIGNER_REGISTRATION } from './subworkflows/sanger/microaligner_registration/main'
 include { TILED_CELLPOSE } from './subworkflows/sanger/tiled_cellpose/main'
 include { TILED_SPOTIFLOW } from './subworkflows/sanger/tiled_spotiflow/main' 
-include { BIOINFOTONGLI_EXTRACTPEAKPROFILE as extract_peak_profile } from './modules/sanger/bioinfotongli/extractpeakprofile/main'  
-include { POSTCODE_DECODING } from './subworkflows/sanger/postcode_decoding/main' 
+include { BIOINFOTONGLI_EXTRACTPEAKPROFILE as EXTRACT_PEAK_PROFILE } from './modules/sanger/bioinfotongli/extractpeakprofile/main'  
+include { POSTCODE } from './modules/sanger/postcode/main'
 include { TO_SPATIALDATA } from './modules/local/to_spatialdata' 
 
 params.debug = false
@@ -36,7 +36,7 @@ workflow {
         // Run the decoding
 
         //get the Peak profile
-        extract_peak_profile(MICRO_ALIGNER_REGISTRATION.out.image.join(TILED_SPOTIFLOW.out.spots_csv))
+        EXTRACT_PEAK_PROFILE(MICRO_ALIGNER_REGISTRATION.out.image.join(TILED_SPOTIFLOW.out.spots_csv))
 
         // Run the codebook conversion
         codebook = channel.from(params.codebook).map { meta, codebook, readouts ->
@@ -45,7 +45,7 @@ workflow {
             file(readouts, type:'file')]
         }
         // extract_peak_profile.out.peak_profile.join(codebook).view()
-        POSTCODE_DECODING(extract_peak_profile.out.peak_profile.join(codebook))
+        POSTCODE(extract_peak_profile.out.peak_profile.join(codebook))
         transcripts = POSTCODE_DECODING.out.decoded_peaks
     } else {
         transcripts = TILED_SPOTIFLOW.out.spots_csv
