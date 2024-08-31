@@ -34,22 +34,19 @@ workflow {
     )
     if (params.decode) {
         // Run the decoding
-
-        //get the Peak profile
         EXTRACT_PEAK_PROFILE(MICRO_ALIGNER_REGISTRATION.out.image.join(TILED_SPOTIFLOW.out.spots_csv))
-
-        // Run the codebook conversion
         codebook = channel.from(params.codebook).map { meta, codebook, readouts ->
             [meta,
             file(codebook, checkIfExists: true, type:'file'),
             file(readouts, type:'file')]
         }
-        // extract_peak_profile.out.peak_profile.join(codebook).view()
-        POSTCODE(extract_peak_profile.out.peak_profile.join(codebook))
+        POSTCODE(EXTRACT_PEAK_PROFILE.out.peak_profile.join(codebook))
         transcripts = POSTCODE_DECODING.out.decoded_peaks
     } else {
+        // Just use the spots
         transcripts = TILED_SPOTIFLOW.out.spots_csv
     }
+    // Contrsuct the spatial data object
     TO_SPATIALDATA(transcripts.combine(TILED_CELLPOSE.out.wkt, by:0)
         .combine(MICRO_ALIGNER_REGISTRATION.out.image, by:0)
         .map(it ->
