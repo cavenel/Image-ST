@@ -14,6 +14,7 @@ import pandas as pd
 import anndata
 from shapely import from_wkt, MultiPoint, MultiPolygon
 import numpy as np
+from skimage.segmentation import expand_labels
 
 from collections.abc import Mapping
 from types import MappingProxyType
@@ -49,6 +50,7 @@ def main(
         feature_col:str='feature_name',
         multiscale_image:bool = True,
         raw_image_channels_to_save:list = [0, 1],
+        expansion_in_pixels:int = -1,
         image_models_kwargs: Mapping[str, Any] = MappingProxyType({}),
         imread_kwargs: Mapping[str, Any] = MappingProxyType({}),):
 
@@ -97,8 +99,12 @@ def main(
     sdata["dapi_image"] = raw_image_parsed
 
     logger.info('Assigning spots to cells')
-    print(cell_labels.data)
-    cell_ids = np.array(cell_labels.data)[0, 
+    if expansion_in_pixels > 0:
+        lab_img = expand_labels(np.array(cell_labels.data), expansion_in_pixels)
+    else:
+        lab_img = np.array(cell_labels.data)
+    
+    cell_ids = lab_img[0, 
         (spots[y_col]/pixelsize).astype(int),
         (spots[x_col]/pixelsize).astype(int)
     ]
