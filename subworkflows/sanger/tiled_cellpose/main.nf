@@ -73,6 +73,7 @@ process CELLPOSE {
     def args = task.ext.args ?: ''  
     """
     export CELLPOSE_LOCAL_MODELS_PATH=/cellpose_models
+    export NUMBA_CACHE_DIR=/tmp/numba_cache
     /opt/conda/bin/python /scripts/cellpose_seg.py run \
         --image ${image} \
         --x_min ${x_min} \
