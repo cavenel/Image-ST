@@ -26,7 +26,7 @@ process Spotiflow_call_peaks {
     script:
     def args = task.ext.args ?: ''
     """
-    /scripts/Spotiflow_call_peaks.py run \
+    python3 /scripts/Spotiflow_call_peaks.py run \
         -image_path ${img} \
         -out_dir ${meta.id} \
         --ch_ind ${ch_ind} \
@@ -59,7 +59,7 @@ process Spotiflow_merge_peaks {
     script:
     def args = task.ext.args ?: ''
     """
-    /scripts/Spotiflow_post_process.py run \
+    python3/scripts/Spotiflow_post_process.py run \
         ${csvs} \
         --ch_ind ${ch_ind} \
         --prefix ${meta.id} \
@@ -92,7 +92,7 @@ process Spotiflow_merge_channels {
     script:
     def args = task.ext.args ?: ''
     """
-    /scripts/merge_wkts.py run \
+    python3 /scripts/merge_wkts.py run \
         --prefix ${meta.id} \
         ${wkts} \
         ${args} \

@@ -31,7 +31,7 @@ process SLICE {
     stem = meta.id
     def args = task.ext.args ?: ''  
     """
-    /scripts/slice_image.py run \\
+    python3 /scripts/slice_image.py run \\
         --image ${file_in} \\
         --out ${stem} \\
         ${args}
@@ -73,7 +73,7 @@ process CELLPOSE {
     def args = task.ext.args ?: ''  
     """
     export CELLPOSE_LOCAL_MODELS_PATH=/cellpose_models
-    /scripts/cellpose_seg.py run \
+    python3 /scripts/cellpose_seg.py run \
         --image ${image} \
         --x_min ${x_min} \
         --y_min ${y_min} \
@@ -115,7 +115,7 @@ process MERGE_OUTLINES {
     stem = "${meta.id}_diam-${cell_diameter}"
     def args = task.ext.args ?: ''  
     """
-    /scripts/merge_wkts.py run \
+    python3 /scripts/merge_wkts.py run \
         --sample_id ${stem} \
         ${wkts} \
         ${args}
