@@ -15,8 +15,8 @@ process SLICE {
     label "small_mem"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "tiled_cellpose:${container_version}":
-        "tiled_cellpose:${container_version}"}"
+        "bioinfotongli/tiled_cellpose:${container_version}":
+        "bioinfotongli/tiled_cellpose:${container_version}"}"
 
     publishDir params.out_dir + "/slice_jsons"
 
@@ -53,8 +53,8 @@ process CELLPOSE {
     label "medium_mem"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "tiled_cellpose:${container_version}":
-        "tiled_cellpose:${container_version}"}"
+        "bioinfotongli/tiled_cellpose:${container_version}":
+        "bioinfotongli/tiled_cellpose:${container_version}"}"
 
     publishDir params.out_dir + "/naive_cellpose_segmentation"
 
@@ -98,8 +98,8 @@ process MERGE_OUTLINES {
     label "medium_mem"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "tiled_cellpose:${container_version}":
-        "tiled_cellpose:${container_version}"}"
+        "bioinfotongli/tiled_cellpose:${container_version}":
+        "bioinfotongli/tiled_cellpose:${container_version}"}"
 
     publishDir params.out_dir + "/cellpose_segmentation_merged_wkt"
 

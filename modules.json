@@ -31,7 +31,7 @@
           },
           "tiled_cellpose": {
             "branch": "develop",
-            "git_sha": "0470cd1c31429f2a7f62fd624a7e6b9abfd3902e",
+            "git_sha": "7a275cb08a637077d9c074c729ba47877105003a",
             "installed_by": ["subworkflows"]
           },
           "tiled_spotiflow": {
