@@ -11,8 +11,8 @@ process Spotiflow_call_peaks {
     label "gpu_normal"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "tiled_spotiflow:${container_version}":
-        "tiled_spotiflow:${container_version}"}"
+        "bioinfotongli/tiled_spotiflow:${container_version}":
+        "bioinfotongli/tiled_spotiflow:${container_version}"}"
     containerOptions "${workflow.containerEngine == 'singularity' ? '--nv':'--gpus all'}"
     publishDir params.out_dir + "/spotiflow_peaks"
 
@@ -45,8 +45,8 @@ process Spotiflow_merge_peaks {
     tag "${meta.id}"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "tiled_spotiflow:${container_version}":
-        "tiled_spotiflow:${container_version}"}"
+        "bioinfotongli/tiled_spotiflow:${container_version}":
+        "bioinfotongli/tiled_spotiflow:${container_version}"}"
     publishDir params.out_dir + "/spotiflow_peaks"
 
     input:
@@ -78,8 +78,8 @@ process Spotiflow_merge_channels {
     tag "${meta.id}"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "tiled_spotiflow:${container_version}":
-        "tiled_spotiflow:${container_version}"}"
+        "bioinfotongli/tiled_spotiflow:${container_version}":
+        "bioinfotongli/tiled_spotiflow:${container_version}"}"
     publishDir params.out_dir + "/spotiflow_peaks"
 
     input:
