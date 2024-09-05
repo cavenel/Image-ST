@@ -17,7 +17,7 @@
           },
           "postcode": {
             "branch": "develop",
-            "git_sha": "b10ce5d71d7f22a6e141976a00756294d82c17c1",
+            "git_sha": "5e646a8f7d6628613f329f2e0210c66e388f799c",
             "installed_by": ["modules"]
           }
         }

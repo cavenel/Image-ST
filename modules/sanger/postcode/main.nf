@@ -25,7 +25,7 @@ process POSTCODE {
     out_name = "${prefix}_decoded_spots.csv"
     def args = task.ext.args ?: ""
     """
-    /scripts/decode.py run --spot_profile_p ${spot_profile} --spot_locations_p ${spot_loc} \\
+    /opt/conda/bin/python /scripts/decode.py run --spot_profile_p ${spot_profile} --spot_locations_p ${spot_loc} \\
         --codebook_p ${codebook} --out_name ${out_name} --readouts_csv ${readouts} \\
         ${args}
 
