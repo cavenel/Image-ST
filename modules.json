@@ -7,7 +7,7 @@
         "sanger": {
           "bioinfotongli/extractpeakprofile": {
             "branch": "develop",
-            "git_sha": "0470cd1c31429f2a7f62fd624a7e6b9abfd3902e",
+            "git_sha": "5ecfdb4d84485883823dd43b1b8408af14871677",
             "installed_by": ["modules"]
           },
           "bioinfotongli/microaligner": {

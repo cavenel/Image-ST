@@ -22,7 +22,7 @@ process BIOINFOTONGLI_EXTRACTPEAKPROFILE {
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}_peak_profile"
     """
-    /scripts/extract_peak_profile.py run \\
+    /opt/conda/bin/python /scripts/extract_peak_profile.py run \\
         --image ${image} \\
         --peaks ${peaks} \\
         --stem ${prefix} \\
