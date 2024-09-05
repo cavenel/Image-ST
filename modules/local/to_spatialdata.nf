@@ -28,7 +28,8 @@ process TO_SPATIALDATA {
     prefix = task.ext.prefix ?: "${meta.id}"
     out_name = "${prefix}.sdata"
     """
-    to_spatialdata.py run \\
+    export NUMBA_CACHE_DIR=/tmp/numba_cache
+    /opt/conda/bin/python ${workflow.projectDir}/bin/to_spatialdata.py run \\
         --transcripts ${transcripts} \\
         --cells_in_wkt ${cells_in_wkt} \\
         --out_name ${out_name} \\
