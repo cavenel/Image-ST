@@ -52,7 +52,9 @@ def main(
         raw_image_channels_to_save:list = [0, 1],
         expansion_in_pixels:int = -1,
         image_models_kwargs: Mapping[str, Any] = MappingProxyType({}),
-        imread_kwargs: Mapping[str, Any] = MappingProxyType({}),):
+        imread_kwargs: Mapping[str, Any] = MappingProxyType({}),
+        save_label_img:bool = False
+    ):
 
     dapi_image = imread(registered_image, **imread_kwargs)[raw_image_channels_to_save]
     dapi_image = DataArray(dapi_image, dims=("c", "y", "x"))
@@ -86,7 +88,6 @@ def main(
     sdata = SpatialData(
         shapes={"cell_shapes": cell_shape},
     )
-    # sdata["cell_labels"] = rasterize(
     logger.info("Rasterizing cell shapes")
     cell_labels = rasterize(
         sdata["cell_shapes"],
@@ -103,6 +104,9 @@ def main(
         lab_img = expand_labels(np.array(cell_labels.data), expansion_in_pixels)
     else:
         lab_img = np.array(cell_labels.data)
+
+    if save_label_img:
+        sdata["cell_labels"] = cell_labels
     
     cell_ids = lab_img[0, 
         (spots[y_col]/pixelsize).astype(int),
