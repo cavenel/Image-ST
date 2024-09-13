@@ -13,7 +13,7 @@ process POSTCODE {
     publishDir params.out_dir + "/PoSTcode_decoding_output"
 
     input:
-    tuple val(meta), file(spot_profile), file(spot_loc), file(codebook), file(readouts)
+    tuple val(meta), file(spot_profile), file(spot_loc), file(codebook), file(readouts), val(R)
 
     output:
     tuple val(meta), path("${out_name}"), emit:decoded_peaks
@@ -26,7 +26,7 @@ process POSTCODE {
     def args = task.ext.args ?: ""
     """
     /opt/conda/bin/python /scripts/decode.py run --spot_profile_p ${spot_profile} --spot_locations_p ${spot_loc} \\
-        --codebook_p ${codebook} --out_name ${out_name} --readouts_csv ${readouts} \\
+        --codebook_p ${codebook} --out_name ${out_name} --readouts_csv ${readouts} --R ${R} \
         ${args}
 
     cat <<-END_VERSIONS > versions.yml

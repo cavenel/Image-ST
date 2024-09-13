@@ -25,6 +25,9 @@ params.chunk_size = 10000
 
 workflow {
     images = channel.from(params.images)
+    n_image_ch = images.map { it ->
+        [it[0], it[1].size()]
+    }
     MICRO_ALIGNER_REGISTRATION(images)
     TILED_CELLPOSE(MICRO_ALIGNER_REGISTRATION.out.image)
     TILED_SPOTIFLOW(
@@ -40,7 +43,7 @@ workflow {
             file(codebook, checkIfExists: true, type:'file'),
             file(readouts, type:'file')]
         }
-        POSTCODE(EXTRACT_PEAK_PROFILE.out.peak_profile.join(codebook))
+        POSTCODE(EXTRACT_PEAK_PROFILE.out.peak_profile.join(codebook).join(n_image_ch))
         transcripts = POSTCODE.out.decoded_peaks
     } else {
         // Just use the spots
