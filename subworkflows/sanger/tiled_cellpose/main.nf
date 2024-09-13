@@ -55,6 +55,10 @@ process CELLPOSE {
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         "bioinfotongli/tiled_cellpose:${container_version}":
         "bioinfotongli/tiled_cellpose:${container_version}"}"
+    containerOptions = {
+            workflow.containerEngine == "singularity" ? "--cleanenv --nv -B ${params.cellpose_model_dir}:/cellpose_models":
+            ( workflow.containerEngine == "docker" ? "--gpus all -v ${params.cellpose_model_dir}:/cellpose_models": null )
+    }
 
     publishDir params.out_dir + "/naive_cellpose_segmentation"
 
