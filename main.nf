@@ -8,7 +8,6 @@ include { BIOINFOTONGLI_EXTRACTPEAKPROFILE as EXTRACT_PEAK_PROFILE } from './mod
 include { POSTCODE } from './modules/sanger/postcode/main'
 include { TO_SPATIALDATA } from './modules/local/to_spatialdata' 
 
-params.debug = false
 params.images = [
     [['id': "run_id"], [
         "cycle1",
@@ -18,10 +17,9 @@ params.images = [
 params.cellpose_model_dir = "/lustre/scratch126/cellgen/cellgeni/tl10/cellpose_models"
 params.chs_to_call_peaks = [1, 2]
 params.cell_diameters=[30]
-params.decode = true
+
 params.codebook = [["id":'' ], "codebook.csv"]
 params.chunk_size = 10000
-
 
 workflow {
     images = channel.from(params.images)
@@ -35,24 +33,33 @@ workflow {
             channel.from(params.chs_to_call_peaks)
         )
     )
-    if (params.decode) {
-        // Run the decoding
-        EXTRACT_PEAK_PROFILE(MICRO_ALIGNER_REGISTRATION.out.image.join(TILED_SPOTIFLOW.out.spots_csv))
-        codebook = channel.from(params.codebook).map { meta, codebook, readouts ->
-            [meta,
-            file(codebook, checkIfExists: true, type:'file'),
-            file(readouts, type:'file')]
-        }
-        POSTCODE(EXTRACT_PEAK_PROFILE.out.peak_profile.join(codebook).join(n_image_ch))
-        transcripts = POSTCODE.out.decoded_peaks
-    } else {
-        // Just use the spots
-        transcripts = TILED_SPOTIFLOW.out.spots_csv
+    // Run the decoding
+    EXTRACT_PEAK_PROFILE(MICRO_ALIGNER_REGISTRATION.out.image.join(TILED_SPOTIFLOW.out.spots_csv))
+    codebook = channel.from(params.codebook).map { meta, codebook, readouts ->
+        [meta,
+        file(codebook, checkIfExists: true, type:'file'),
+        file(readouts, type:'file')]
     }
+    POSTCODE(EXTRACT_PEAK_PROFILE.out.peak_profile.join(codebook).join(n_image_ch))
     // Contrsuct the spatial data object
-    TO_SPATIALDATA(transcripts.combine(TILED_CELLPOSE.out.wkt, by:0)
+    TO_SPATIALDATA(POSTCODE.out.decoded_peaks.combine(TILED_CELLPOSE.out.wkt, by:0)
         .combine(MICRO_ALIGNER_REGISTRATION.out.image, by:0)
         .map(it ->
         [it[0], it[1], it[3], it[4]])
+    )
+}
+
+
+workflow RNAScope {
+    images = channel.from(params.images)
+    TILED_CELLPOSE(images)
+    TILED_SPOTIFLOW(
+        images.combine(channel.from(params.chs_to_call_peaks))
+    )
+    TO_SPATIALDATA(TILED_SPOTIFLOW.out.spots_csv.combine(TILED_CELLPOSE.out.wkt, by:0)
+        .combine(images, by:0)
+        .map(it ->
+            [it[0], it[1], it[3], it[4]]
+        )
     )
 }
