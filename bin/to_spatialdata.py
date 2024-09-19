@@ -6,7 +6,7 @@ import fire
 from dask_image.imread import imread
 from spatialdata.models import Image2DModel
 from spatialdata import SpatialData, rasterize
-from spatialdata.models import ShapesModel, TableModel, PointsModel
+from spatialdata.models import ShapesModel, TableModel, PointsModel, Labels2DModel
 from geopandas import GeoDataFrame
 from xarray import DataArray
 from spatialdata.transformations.transformations import Identity
@@ -108,7 +108,13 @@ def main(
         lab_img = np.array(cell_labels.data)
 
     if save_label_img:
-        sdata["cell_labels"] = cell_labels
+        sdata["cell_labels"] = \
+            Labels2DModel.parse(
+                np.squeeze(lab_img),
+                scale_factors=[2, 2, 2, 2],
+                transformations={"global": Identity()},
+            )
+
     
     cell_ids = lab_img[0, 
         (spots[y_col]/pixelsize).astype(int),
@@ -119,6 +125,8 @@ def main(
     logger.info("Create count matrix")
     count_matrix = spots.pivot_table(index='cell_id', columns=feature_col, aggfunc='size', fill_value=0)
     count_matrix = count_matrix.drop(count_matrix[count_matrix.index == 0].index)
+    count_matrix['num_cells'] = np.max(lab_img)
+    count_matrix['num_spots'] = spots.shape[0]
     count_matrix.to_csv(out_name.replace('.sdata', '_count_matrix.csv'))
 
     logger.info("Construct anndata object")
