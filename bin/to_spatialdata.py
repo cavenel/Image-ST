@@ -119,6 +119,7 @@ def main(
     logger.info("Create count matrix")
     count_matrix = spots.pivot_table(index='cell_id', columns=feature_col, aggfunc='size', fill_value=0)
     count_matrix = count_matrix.drop(count_matrix[count_matrix.index == 0].index)
+    count_matrix.to_csv(out_name.replace('.sdata', '_count_matrix.csv'))
 
     logger.info("Construct anndata object")
     adata = anndata.AnnData(X=count_matrix.values)
