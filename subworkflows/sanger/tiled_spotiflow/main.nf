@@ -29,7 +29,7 @@ process Spotiflow_call_peaks {
     """
     /opt/conda/bin/python /scripts/Spotiflow_call_peaks.py run \
         -image_path ${img} \
-        -out_dir ${meta.id} \
+        -out_dir "${meta.id}" \
         --ch_ind ${ch_ind} \
         ${args}
     
@@ -65,7 +65,7 @@ process Spotiflow_merge_peaks {
     /opt/conda/bin/python /scripts/Spotiflow_post_process.py run \
         ${csvs} \
         --ch_ind ${ch_ind} \
-        --prefix ${meta.id} \
+        --prefix "${meta.id}" \
         ${args} \
 
     cat <<-END_VERSIONS > versions.yml
@@ -98,7 +98,7 @@ process Spotiflow_merge_channels {
     def args = task.ext.args ?: ''
     """
     /opt/conda/bin/python /scripts/merge_wkts.py run \
-        --prefix ${meta.id} \
+        --prefix "${meta.id}" \
         ${wkts} \
         ${args} \
 
