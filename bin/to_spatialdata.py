@@ -110,7 +110,7 @@ def main(
     if save_label_img:
         sdata["cell_labels"] = \
             Labels2DModel.parse(
-                np.squeeze(lab_img),
+                np.squeeze(lab_img).astype(np.int32),
                 scale_factors=[2, 2, 2, 2],
                 transformations={"global": Identity()},
             )
