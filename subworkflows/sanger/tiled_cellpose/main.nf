@@ -15,8 +15,8 @@ process SLICE {
     label "small_mem"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "bioinfotongli/tiled_cellpose:${container_version}":
-        "bioinfotongli/tiled_cellpose:${container_version}"}"
+        "quay.io/bioinfotongli/tiled_cellpose:${container_version}":
+        "quay.io/bioinfotongli/tiled_cellpose:${container_version}"}"
 
     publishDir params.out_dir + "/slice_jsons"
 
@@ -66,15 +66,14 @@ process CELLPOSE {
     tuple val(meta), val(x_min), val(y_min), val(x_max), val(y_max), path(image), val(cell_diameter)
 
     output:
-    tuple val(meta), val(cell_diameter), path("${stem}/${prefix}_cp_outlines.txt"), emit: outlines, optional: true
+    tuple val(meta), val(cell_diameter), path("${stem}/${stem}_cp_outlines.txt"), emit: outlines, optional: true
     tuple val(meta), val(cell_diameter), path("${stem}/${stem}_cp_outlines.wkt"), emit: wkts
-    tuple val(meta), val(cell_diameter), path("${stem}/${prefix}*png"), emit: cp_plots, optional: true
+    tuple val(meta), val(cell_diameter), path("${stem}/${stem}*png"), emit: cp_plots, optional: true
     path "versions.yml"           , emit: versions
 
     script:
     baseName = "${x_min}_${y_min}_${x_max}_${y_max}"
     stem = "${meta.id}-${baseName}-diam_${cell_diameter}"
-    prefix = file(meta.id).baseName
     def args = task.ext.args ?: ''  
     """
     export CELLPOSE_LOCAL_MODELS_PATH=/cellpose_models

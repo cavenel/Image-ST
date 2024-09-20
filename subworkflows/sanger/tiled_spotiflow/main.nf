@@ -12,8 +12,8 @@ process Spotiflow_call_peaks {
     label "process_medium"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "bioinfotongli/tiled_spotiflow:${container_version}":
-        "bioinfotongli/tiled_spotiflow:${container_version}"}"
+        "quay.io/bioinfotongli/tiled_spotiflow:${container_version}":
+        "quay.io/bioinfotongli/tiled_spotiflow:${container_version}"}"
     containerOptions "${workflow.containerEngine == 'singularity' ? '--nv':'--gpus all'}"
     publishDir params.out_dir + "/spotiflow_peaks"
 
