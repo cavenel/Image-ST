@@ -32,8 +32,8 @@ process SLICE {
     def args = task.ext.args ?: ''  
     """
     /opt/conda/bin/python /scripts/slice_image.py run \\
-        --image ${file_in} \\
-        --out ${stem} \\
+        --image "${file_in}" \\
+        --out "${stem}" \\
         ${args}
 
     cat <<-END_VERSIONS > versions.yml
@@ -79,7 +79,7 @@ process CELLPOSE {
     export CELLPOSE_LOCAL_MODELS_PATH=/cellpose_models
     export NUMBA_CACHE_DIR=/tmp/numba_cache
     /opt/conda/bin/python /scripts/cellpose_seg.py run \
-        --image ${image} \
+        --image "${image}" \
         --x_min ${x_min} \
         --y_min ${y_min} \
         --x_max ${x_max} \
@@ -121,7 +121,7 @@ process MERGE_OUTLINES {
     def args = task.ext.args ?: ''  
     """
     /opt/conda/bin/python /scripts/merge_wkts.py run \
-        --sample_id ${stem} \
+        --sample_id "${stem}" \
         ${wkts} \
         ${args}
     
