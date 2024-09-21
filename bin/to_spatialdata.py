@@ -6,7 +6,7 @@ import fire
 from dask_image.imread import imread
 from spatialdata.models import Image2DModel
 from spatialdata import SpatialData, rasterize
-from spatialdata.models import ShapesModel, TableModel, PointsModel
+from spatialdata.models import ShapesModel, TableModel, PointsModel, Labels2DModel
 from geopandas import GeoDataFrame
 from xarray import DataArray
 from spatialdata.transformations.transformations import Identity
@@ -31,12 +31,14 @@ VERSION = "0.0.1"
 def load_wkts_as_shapemodel(wkt_file:str):
     with open(wkt_file, 'r') as f:
         multipoly = from_wkt(f.read())
-        assert isinstance(multipoly, MultiPolygon)
-    ids, polys = zip(*{i+1:poly for i, poly in enumerate(list(multipoly.geoms))}.items())
-    df = pd.DataFrame({"instance_id":ids, "geometry":polys})
-    df["instance_id"] = df["instance_id"].astype(int)
-    df.index.name = None
-    return ShapesModel.parse(GeoDataFrame(df))
+    if isinstance(multipoly, MultiPolygon):
+        ids, polys = zip(*{i+1:poly for i, poly in enumerate(list(multipoly.geoms))}.items())
+        df = pd.DataFrame({"instance_id":ids, "geometry":polys})
+        df["instance_id"] = df["instance_id"].astype(int)
+        df.index.name = None
+        return ShapesModel.parse(GeoDataFrame(df))
+    else:
+        raise ValueError('Please provide a wkt file with multipolygon geometry')
 
 
 def main(
@@ -45,8 +47,8 @@ def main(
         registered_image:str,
         out_name:str,
         pixelsize:int=1,
-        y_col:str='y_location',
-        x_col:str='x_location',
+        y_col:str='y_int',
+        x_col:str='x_int',
         feature_col:str='feature_name',
         multiscale_image:bool = True,
         raw_image_channels_to_save:list = [0, 1],
@@ -78,7 +80,7 @@ def main(
         if not isinstance(multispots, MultiPoint):
             raise ValueError('Please provide a wkt file with multipoint geometry')
         spots = pd.DataFrame([(geom.y, geom.x) for geom in multispots.geoms], columns=[y_col, x_col])
-        spots["feature_name"] = 'spot'
+        spots[feature_col] = 'spot'
     else:
         raise ValueError('Format not recognized. Please provide a csv, tsv or wkt file')
 
@@ -106,16 +108,26 @@ def main(
         lab_img = np.array(cell_labels.data)
 
     if save_label_img:
-        sdata["cell_labels"] = cell_labels
+        sdata["cell_labels"] = \
+            Labels2DModel.parse(
+                np.squeeze(lab_img).astype(np.int32),
+                scale_factors=[2, 2, 2, 2],
+                transformations={"global": Identity()},
+            )
+
     
     cell_ids = lab_img[0, 
         (spots[y_col]/pixelsize).astype(int),
         (spots[x_col]/pixelsize).astype(int)
     ]
     spots['cell_id'] = cell_ids
+
     logger.info("Create count matrix")
     count_matrix = spots.pivot_table(index='cell_id', columns=feature_col, aggfunc='size', fill_value=0)
     count_matrix = count_matrix.drop(count_matrix[count_matrix.index == 0].index)
+    count_matrix['num_cells'] = np.max(lab_img)
+    count_matrix['num_spots'] = spots.shape[0]
+    count_matrix.to_csv(out_name.replace('.sdata', '_count_matrix.csv'))
 
     logger.info("Construct anndata object")
     adata = anndata.AnnData(X=count_matrix.values)
@@ -127,15 +139,19 @@ def main(
     adata.var_names = count_matrix.columns
     adata.var_names_make_unique()
     adata.obs[REGION_KEY] = REGION
-    table = TableModel.parse(adata, region=REGION, region_key=REGION_KEY, instance_key=instance_key)
+    table = TableModel.parse(
+        adata,
+        region=REGION,
+        region_key=REGION_KEY,
+        instance_key=instance_key
+    )
 
     points = PointsModel.parse(
         spots,
         coordinates={"x": "x_int", "y": "y_int"},
-        # feature_key=instance_key,
-        # instance_key=XeniumKeys.CELL_ID,
+        feature_key=feature_col,
+        # instance_key=instance_key,
         transformations={"global": Identity()},
-        # sort=True,
     )
     sdata["transcripts"] = points
     sdata["table"] = table

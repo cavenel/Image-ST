@@ -15,8 +15,8 @@ process SLICE {
     label "small_mem"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "bioinfotongli/tiled_cellpose:${container_version}":
-        "bioinfotongli/tiled_cellpose:${container_version}"}"
+        "quay.io/bioinfotongli/tiled_cellpose:${container_version}":
+        "quay.io/bioinfotongli/tiled_cellpose:${container_version}"}"
 
     publishDir params.out_dir + "/slice_jsons"
 
@@ -33,7 +33,7 @@ process SLICE {
     """
     /opt/conda/bin/python /scripts/slice_image.py run \\
         --image ${file_in} \\
-        --out ${stem} \\
+        --out "${stem}" \\
         ${args}
 
     cat <<-END_VERSIONS > versions.yml
@@ -55,6 +55,10 @@ process CELLPOSE {
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         "bioinfotongli/tiled_cellpose:${container_version}":
         "bioinfotongli/tiled_cellpose:${container_version}"}"
+    containerOptions = {
+            workflow.containerEngine == "singularity" ? "--cleanenv --nv -B ${params.cellpose_model_dir}:/cellpose_models":
+            ( workflow.containerEngine == "docker" ? "--gpus all -v ${params.cellpose_model_dir}:/cellpose_models": null )
+    }
 
     publishDir params.out_dir + "/naive_cellpose_segmentation"
 
@@ -117,7 +121,7 @@ process MERGE_OUTLINES {
     def args = task.ext.args ?: ''  
     """
     /opt/conda/bin/python /scripts/merge_wkts.py run \
-        --sample_id ${stem} \
+        --sample_id "${stem}" \
         ${wkts} \
         ${args}
     

@@ -8,11 +8,12 @@ process Spotiflow_call_peaks {
     debug params.debug
     tag "${meta.id}"
 
-    label "gpu_normal"
+    label "gpu"
+    label "process_medium"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "bioinfotongli/tiled_spotiflow:${container_version}":
-        "bioinfotongli/tiled_spotiflow:${container_version}"}"
+        "quay.io/bioinfotongli/tiled_spotiflow:${container_version}":
+        "quay.io/bioinfotongli/tiled_spotiflow:${container_version}"}"
     containerOptions "${workflow.containerEngine == 'singularity' ? '--nv':'--gpus all'}"
     publishDir params.out_dir + "/spotiflow_peaks"
 
@@ -28,7 +29,7 @@ process Spotiflow_call_peaks {
     """
     /opt/conda/bin/python /scripts/Spotiflow_call_peaks.py run \
         -image_path ${img} \
-        -out_dir ${meta.id} \
+        -out_dir "${meta.id}" \
         --ch_ind ${ch_ind} \
         ${args}
     
@@ -43,6 +44,8 @@ process Spotiflow_call_peaks {
 process Spotiflow_merge_peaks {
     debug params.debug
     tag "${meta.id}"
+
+    label "process_medium"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         "bioinfotongli/tiled_spotiflow:${container_version}":
@@ -62,7 +65,7 @@ process Spotiflow_merge_peaks {
     /opt/conda/bin/python /scripts/Spotiflow_post_process.py run \
         ${csvs} \
         --ch_ind ${ch_ind} \
-        --prefix ${meta.id} \
+        --prefix "${meta.id}" \
         ${args} \
 
     cat <<-END_VERSIONS > versions.yml
@@ -76,6 +79,8 @@ process Spotiflow_merge_peaks {
 process Spotiflow_merge_channels {
     debug params.debug
     tag "${meta.id}"
+
+    label "process_medium"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         "bioinfotongli/tiled_spotiflow:${container_version}":
@@ -93,7 +98,7 @@ process Spotiflow_merge_channels {
     def args = task.ext.args ?: ''
     """
     /opt/conda/bin/python /scripts/merge_wkts.py run \
-        --prefix ${meta.id} \
+        --prefix "${meta.id}" \
         ${wkts} \
         ${args} \
 

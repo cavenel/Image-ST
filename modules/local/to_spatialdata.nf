@@ -18,6 +18,7 @@ process TO_SPATIALDATA {
 
     output:
     tuple val(meta), path("${out_name}"), emit: spatialdata
+    tuple val(meta), path("${prefix}_count_matrix.csv"), optional: true
     path "versions.yml"           , emit: versions
 
     when:
