@@ -51,7 +51,7 @@ def main(
         x_col:str='x_int',
         feature_col:str='feature_name',
         multiscale_image:bool = True,
-        raw_image_channels_to_save:list = [0, 1],
+        raw_image_channels_to_save:list = [0],
         expansion_in_pixels:int = -1,
         image_models_kwargs: Mapping[str, Any] = MappingProxyType({}),
         imread_kwargs: Mapping[str, Any] = MappingProxyType({}),
@@ -93,7 +93,7 @@ def main(
     logger.info("Rasterizing cell shapes")
     cell_labels = rasterize(
         sdata["cell_shapes"],
-        ["x", "y"],
+        ["y", "x"],
         min_coordinate=[0, 0],
         max_coordinate=[dapi_image.shape[-2], dapi_image.shape[-1]],
         target_coordinate_system="global",
@@ -115,7 +115,6 @@ def main(
                 transformations={"global": Identity()},
             )
 
-    
     cell_ids = lab_img[0, 
         (spots[y_col]/pixelsize).astype(int),
         (spots[x_col]/pixelsize).astype(int)
