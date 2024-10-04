@@ -35,7 +35,7 @@ workflow {
     )
     // Run the decoding
     EXTRACT_PEAK_PROFILE(MICRO_ALIGNER_REGISTRATION.out.image.join(TILED_SPOTIFLOW.out.spots_csv))
-    codebook = channel.from(params.codebook).map { meta, codebook, _ ->
+    codebook = channel.from(params.codebook).map { meta, codebook, readouts ->
         [meta,
         file(codebook, checkIfExists: true, type:'file'),
         file(readouts, checkIfExists: false, type:'file')]
