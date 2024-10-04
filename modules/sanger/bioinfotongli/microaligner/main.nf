@@ -9,8 +9,8 @@ process BIOINFOTONGLI_MICROALIGNER {
     cache true 
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "bioinfotongli/microaligner:${VERSION}" :
-        "bioinfotongli/microaligner:${VERSION}" }"
+        "quay.io/bioinfotongli/microaligner:${VERSION}" :
+        "quay.io/bioinfotongli/microaligner:${VERSION}" }"
     publishDir params.out_dir + "/registered_stacks"
 
     input:
