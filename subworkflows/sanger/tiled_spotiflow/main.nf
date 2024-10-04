@@ -48,8 +48,8 @@ process Spotiflow_merge_peaks {
     label "process_medium"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "bioinfotongli/tiled_spotiflow:${container_version}":
-        "bioinfotongli/tiled_spotiflow:${container_version}"}"
+        "quay.io/bioinfotongli/tiled_spotiflow:${container_version}":
+        "quay.io/bioinfotongli/tiled_spotiflow:${container_version}"}"
     publishDir params.out_dir + "/spotiflow_peaks"
 
     input:
@@ -83,8 +83,8 @@ process Spotiflow_merge_channels {
     label "process_medium"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "bioinfotongli/tiled_spotiflow:${container_version}":
-        "bioinfotongli/tiled_spotiflow:${container_version}"}"
+        "quay.io/bioinfotongli/tiled_spotiflow:${container_version}":
+        "quay.io/bioinfotongli/tiled_spotiflow:${container_version}"}"
     publishDir params.out_dir + "/spotiflow_peaks"
 
     input:
