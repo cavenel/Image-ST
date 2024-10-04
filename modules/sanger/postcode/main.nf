@@ -8,8 +8,8 @@ process POSTCODE {
     cpus 1
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'bioinfotongli/postcode:latest':
-        'bioinfotongli/postcode:latest'}"
+        'quay.io/bioinfotongli/postcode:latest':
+        'quay.io/bioinfotongli/postcode:latest'}"
     publishDir params.out_dir + "/PoSTcode_decoding_output"
 
     input:
