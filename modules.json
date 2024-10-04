@@ -17,7 +17,7 @@
           },
           "postcode": {
             "branch": "develop",
-            "git_sha": "06b2e5cb1ada9a6c17d4e371cb234ea1825788c4",
+            "git_sha": "c5d371b5ff1909d84ff7d3627b279751736dee2e",
             "installed_by": ["modules"]
           }
         }
@@ -31,7 +31,7 @@
           },
           "tiled_cellpose": {
             "branch": "develop",
-            "git_sha": "a1d5de03f80c989fffd952081c77526e572f9e6a",
+            "git_sha": "c5d371b5ff1909d84ff7d3627b279751736dee2e",
             "installed_by": ["subworkflows"]
           },
           "tiled_spotiflow": {
