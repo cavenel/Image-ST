@@ -35,15 +35,10 @@ workflow {
     )
     // Run the decoding
     EXTRACT_PEAK_PROFILE(MICRO_ALIGNER_REGISTRATION.out.image.join(TILED_SPOTIFLOW.out.spots_csv))
-    if (params.codebook[2] == null) {
-        readouts = null
-    } else {
-        readouts = file(params.codebook[2], checkIfExists: true, type:'file')
-    }
     codebook = channel.from(params.codebook).map { meta, codebook, _ ->
         [meta,
         file(codebook, checkIfExists: true, type:'file'),
-        readouts]
+        file(readouts, checkIfExists: false, type:'file')]
     }
     POSTCODE(EXTRACT_PEAK_PROFILE.out.peak_profile.join(codebook).join(n_image_ch))
     // Contrsuct the spatial data object
