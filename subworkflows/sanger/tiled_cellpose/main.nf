@@ -53,10 +53,10 @@ process CELLPOSE {
     label "medium_mem"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "bioinfotongli/tiled_cellpose:${container_version}":
-        "bioinfotongli/tiled_cellpose:${container_version}"}"
+        "quay.io/bioinfotongli/tiled_cellpose:${container_version}":
+        "quay.io/bioinfotongli/tiled_cellpose:${container_version}"}"
     containerOptions = {
-            workflow.containerEngine == "singularity" ? "--cleanenv --nv -B ${params.cellpose_model_dir}:/cellpose_models":
+            workflow.containerEngine == "singularity" ? "--cleanenv --nv -B ${params.cellpose_model_dir}:/cellpose_models -B ${params.NUMBA_CACHE_DIR}:/tmp/numba_cache":
             ( workflow.containerEngine == "docker" ? "--gpus all -v ${params.cellpose_model_dir}:/cellpose_models": null )
     }
 
@@ -103,8 +103,8 @@ process MERGE_OUTLINES {
     label "medium_mem"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "bioinfotongli/tiled_cellpose:${container_version}":
-        "bioinfotongli/tiled_cellpose:${container_version}"}"
+        "quay.io/bioinfotongli/tiled_cellpose:${container_version}":
+        "quay.io/bioinfotongli/tiled_cellpose:${container_version}"}"
 
     publishDir params.out_dir + "/cellpose_segmentation_merged_wkt"
 
