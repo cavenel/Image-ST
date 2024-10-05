@@ -15,8 +15,8 @@ process SLICE {
     label "small_mem"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "tiled_cellpose:${container_version}":
-        "tiled_cellpose:${container_version}"}"
+        "quay.io/bioinfotongli/tiled_cellpose:${container_version}":
+        "quay.io/bioinfotongli/tiled_cellpose:${container_version}"}"
 
     publishDir params.out_dir + "/slice_jsons"
 
@@ -31,9 +31,9 @@ process SLICE {
     stem = meta.id
     def args = task.ext.args ?: ''  
     """
-    /scripts/slice_image.py run \\
+    /opt/conda/bin/python /scripts/slice_image.py run \\
         --image ${file_in} \\
-        --out ${stem} \\
+        --out "${stem}" \\
         ${args}
 
     cat <<-END_VERSIONS > versions.yml
@@ -53,10 +53,14 @@ process CELLPOSE {
     label "medium_mem"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "tiled_cellpose:${container_version}":
-        "tiled_cellpose:${container_version}"}"
+        "quay.io/bioinfotongli/tiled_cellpose:${container_version}":
+        "quay.io/bioinfotongli/tiled_cellpose:${container_version}"}"
+    containerOptions = {
+            workflow.containerEngine == "singularity" ? "--cleanenv --nv -B ${params.cellpose_model_dir}:/cellpose_models -B ${params.NUMBA_CACHE_DIR}:/tmp/numba_cache":
+            ( workflow.containerEngine == "docker" ? "--gpus all -v ${params.cellpose_model_dir}:/cellpose_models": null )
+    }
 
-    publishDir params.out_dir + "/cellpose_segmentation", mode: 'copy'
+    publishDir params.out_dir + "/naive_cellpose_segmentation"
 
     input:
     tuple val(meta), val(x_min), val(y_min), val(x_max), val(y_max), path(image), val(cell_diameter)
@@ -73,7 +77,8 @@ process CELLPOSE {
     def args = task.ext.args ?: ''  
     """
     export CELLPOSE_LOCAL_MODELS_PATH=/cellpose_models
-    /scripts/cellpose_seg.py run \
+    export NUMBA_CACHE_DIR=/tmp/numba_cache
+    /opt/conda/bin/python /scripts/cellpose_seg.py run \
         --image ${image} \
         --x_min ${x_min} \
         --y_min ${y_min} \
@@ -98,10 +103,10 @@ process MERGE_OUTLINES {
     label "medium_mem"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "tiled_cellpose:${container_version}":
-        "tiled_cellpose:${container_version}"}"
+        "quay.io/bioinfotongli/tiled_cellpose:${container_version}":
+        "quay.io/bioinfotongli/tiled_cellpose:${container_version}"}"
 
-    publishDir params.out_dir + "/cellpose_segmentation_outlines", mode: 'copy'
+    publishDir params.out_dir + "/cellpose_segmentation_merged_wkt"
 
     input:
     tuple val(meta), val(cell_diameter), path(wkts)
@@ -115,8 +120,8 @@ process MERGE_OUTLINES {
     stem = "${meta.id}_diam-${cell_diameter}"
     def args = task.ext.args ?: ''  
     """
-    /scripts/merge_wkts.py run \
-        --sample_id ${stem} \
+    /opt/conda/bin/python /scripts/merge_wkts.py run \
+        --sample_id "${stem}" \
         ${wkts} \
         ${args}
     

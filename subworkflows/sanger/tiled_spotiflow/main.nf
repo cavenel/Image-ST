@@ -8,13 +8,14 @@ process Spotiflow_call_peaks {
     debug params.debug
     tag "${meta.id}"
 
-    label "gpu_normal"
+    label "gpu"
+    label "process_medium"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "tiled_spotiflow:${container_version}":
-        "tiled_spotiflow:${container_version}"}"
+        "quay.io/bioinfotongli/tiled_spotiflow:${container_version}":
+        "quay.io/bioinfotongli/tiled_spotiflow:${container_version}"}"
     containerOptions "${workflow.containerEngine == 'singularity' ? '--nv':'--gpus all'}"
-    publishDir params.out_dir
+    publishDir params.out_dir + "/spotiflow_peaks"
 
     input:
     tuple val(meta), path(img), val(ch_ind)
@@ -26,9 +27,9 @@ process Spotiflow_call_peaks {
     script:
     def args = task.ext.args ?: ''
     """
-    /scripts/Spotiflow_call_peaks.py run \
+    /opt/conda/bin/python /scripts/Spotiflow_call_peaks.py run \
         -image_path ${img} \
-        -out_dir ${meta.id} \
+        -out_dir "${meta.id}" \
         --ch_ind ${ch_ind} \
         ${args}
     
@@ -44,10 +45,12 @@ process Spotiflow_merge_peaks {
     debug params.debug
     tag "${meta.id}"
 
+    label "process_medium"
+
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "tiled_spotiflow:${container_version}":
-        "tiled_spotiflow:${container_version}"}"
-    publishDir params.out_dir
+        "quay.io/bioinfotongli/tiled_spotiflow:${container_version}":
+        "quay.io/bioinfotongli/tiled_spotiflow:${container_version}"}"
+    publishDir params.out_dir + "/spotiflow_peaks"
 
     input:
     tuple val(meta), path(csvs), val(ch_ind)
@@ -59,10 +62,10 @@ process Spotiflow_merge_peaks {
     script:
     def args = task.ext.args ?: ''
     """
-    /scripts/Spotiflow_post_process.py run \
+    /opt/conda/bin/python /scripts/Spotiflow_post_process.py run \
         ${csvs} \
         --ch_ind ${ch_ind} \
-        --prefix ${meta.id} \
+        --prefix "${meta.id}" \
         ${args} \
 
     cat <<-END_VERSIONS > versions.yml
@@ -77,10 +80,12 @@ process Spotiflow_merge_channels {
     debug params.debug
     tag "${meta.id}"
 
+    label "process_medium"
+
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "tiled_spotiflow:${container_version}":
-        "tiled_spotiflow:${container_version}"}"
-    publishDir params.out_dir, mode: 'copy'
+        "quay.io/bioinfotongli/tiled_spotiflow:${container_version}":
+        "quay.io/bioinfotongli/tiled_spotiflow:${container_version}"}"
+    publishDir params.out_dir + "/spotiflow_peaks"
 
     input:
     tuple val(meta), path(wkts)
@@ -92,8 +97,8 @@ process Spotiflow_merge_channels {
     script:
     def args = task.ext.args ?: ''
     """
-    /scripts/merge_wkts.py run \
-        --prefix ${meta.id} \
+    /opt/conda/bin/python /scripts/merge_wkts.py run \
+        --prefix "${meta.id}" \
         ${wkts} \
         ${args} \
 

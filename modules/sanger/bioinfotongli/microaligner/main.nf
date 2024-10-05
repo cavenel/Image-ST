@@ -9,15 +9,16 @@ process BIOINFOTONGLI_MICROALIGNER {
     cache true 
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "bioinfotongli/microaligner:${VERSION}" :
-        "bioinfotongli/microaligner:${VERSION}" }"
-    publishDir params.out_dir + "/registered_stacks", mode: 'copy'
+        "quay.io/bioinfotongli/microaligner:${VERSION}" :
+        "quay.io/bioinfotongli/microaligner:${VERSION}" }"
+    publishDir params.out_dir + "/registered_stacks"
 
     input:
     tuple val(meta), path(config), path(images)
+    val(method) // either feature or optflow
 
     output:
-    tuple val(meta), path("${prefix}*_reg_result_stack.tif"), emit: registered_image
+    tuple val(meta), path("${prefix}_${method}_reg_result_stack.tif"), emit: registered_image
     path "versions.yml"           , emit: versions
 
     when:

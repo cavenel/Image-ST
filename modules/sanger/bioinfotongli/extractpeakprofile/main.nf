@@ -4,9 +4,9 @@ process BIOINFOTONGLI_EXTRACTPEAKPROFILE {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'bioinfotongli/extract_peak_profile:latest':
-        'bioinfotongli/extract_peak_profile:latest' }"
-    publishDir params.out_dir + "/peak_profiles/", mode: 'copy'
+        'quay.io/bioinfotongli/extract_peak_profile:latest':
+        'quay.io/bioinfotongli/extract_peak_profile:latest' }"
+    publishDir params.out_dir + "/peak_profiles/"
 
     input:
     tuple val(meta), path(image), path(peaks)
@@ -22,7 +22,7 @@ process BIOINFOTONGLI_EXTRACTPEAKPROFILE {
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}_peak_profile"
     """
-    /scripts/extract_peak_profile.py run \\
+    /opt/conda/bin/python /scripts/extract_peak_profile.py run \\
         --image ${image} \\
         --peaks ${peaks} \\
         --stem ${prefix} \\
