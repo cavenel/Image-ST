@@ -9,8 +9,8 @@ process TO_SPATIALDATA {
     cache true 
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "bioinfotongli/spatialdata:${VERSION}" :
-        "bioinfotongli/spatialdata:${VERSION}" }"
+        "quay.io/bioinfotongli/spatialdata:${VERSION}" :
+        "quay.io/bioinfotongli/spatialdata:${VERSION}" }"
     publishDir params.out_dir + "/spatialdata", mode: 'copy'
 
     input:
