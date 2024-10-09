@@ -36,7 +36,7 @@
           },
           "tiled_spotiflow": {
             "branch": "develop",
-            "git_sha": "d485b0175014e3a3a2ce5133dfc88a70dbbc18ae",
+            "git_sha": "23fc1feafda585db7fd454945f74e119e4350a6c",
             "installed_by": ["subworkflows"]
           }
         }

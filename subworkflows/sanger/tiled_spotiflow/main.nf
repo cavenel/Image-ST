@@ -14,7 +14,10 @@ process Spotiflow_call_peaks {
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         "quay.io/bioinfotongli/tiled_spotiflow:${container_version}":
         "quay.io/bioinfotongli/tiled_spotiflow:${container_version}"}"
-    containerOptions "${workflow.containerEngine == 'singularity' ? '--nv':'--gpus all'}"
+    containerOptions = {
+        workflow.containerEngine == "singularity" ? "--cleanenv --nv -B ${params.spotiflow_model_dir}:/tmp/spotiflow_models":
+        ( workflow.containerEngine == "docker" ? "--gpus all -v ${params.spotiflow_model_dir}:/tmp/spotiflow_models": null )
+    }
     publishDir params.out_dir + "/spotiflow_peaks"
 
     input:
@@ -27,6 +30,7 @@ process Spotiflow_call_peaks {
     script:
     def args = task.ext.args ?: ''
     """
+    export SPOTIFLOW_CACHE_DIR=/tmp/spotiflow_models
     /opt/conda/bin/python /scripts/Spotiflow_call_peaks.py run \
         -image_path ${img} \
         -out_dir "${meta.id}" \
