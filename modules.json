@@ -13,7 +13,7 @@
           "bioinfotongli/microaligner": {
             "branch": "develop",
             "git_sha": "1b3911ca039be5074507a4f9f8cd76c08444b583",
-            "installed_by": ["modules"]
+            "installed_by": ["microaligner_registration"]
           },
           "postcode": {
             "branch": "develop",
@@ -36,7 +36,7 @@
           },
           "tiled_spotiflow": {
             "branch": "develop",
-            "git_sha": "ecba087aa0362919cb55dff7e530d5bcc923bdff",
+            "git_sha": "65cd75c39647116ecb4cf7d8787ef8e9a329093f",
             "installed_by": ["subworkflows"]
           }
         }
