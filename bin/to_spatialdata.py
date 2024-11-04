@@ -15,6 +15,7 @@ import anndata
 from shapely import from_wkt, MultiPoint, MultiPolygon
 import numpy as np
 from skimage.segmentation import expand_labels
+from skimage.measure import regionprops_table
 
 from collections.abc import Mapping
 from types import MappingProxyType
@@ -25,7 +26,7 @@ logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger(__name__)
 
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 
 
 def load_wkts_as_shapemodel(wkt_file:str):
@@ -100,12 +101,19 @@ def main(
         target_unit_to_pixels=1.0,
     )
     sdata["dapi_image"] = raw_image_parsed
-
+ 
     logger.info('Assigning spots to cells')
     if expansion_in_pixels > 0:
         lab_img = expand_labels(np.array(cell_labels.data), expansion_in_pixels)
     else:
         lab_img = np.array(cell_labels.data)
+    props_dict = regionprops_table(
+        np.squeeze(lab_img).astype(np.int16),
+        intensity_image=np.array(dapi_image).transpose(1, 2, 0),
+        properties=['label', 'area', 'intensity_mean', "centroid", "axis_major_length", "axis_minor_length"]
+    )
+    props_df = pd.DataFrame(props_dict)
+    props_df.to_csv(out_name.replace('.sdata', '_cell_props.csv'))
 
     if save_label_img:
         sdata["cell_labels"] = \
