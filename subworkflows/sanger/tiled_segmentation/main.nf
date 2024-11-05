@@ -1,4 +1,5 @@
 include { BIOINFOTONGLI_CELLPOSE as CELLPOSE } from '../../../modules/sanger/bioinfotongli/cellpose/main'
+include { BIOINFOTONGLI_GENERATETILES as GENERATE_TILE_COORDS } from '../../../modules/sanger/bioinfotongli/generatetiles/main'
 
 params.images = [
     [["id":"test1"], "file1"],
@@ -10,41 +11,6 @@ params.debug=false
 
 container_version = "latest"
 
-
-process GENERATE_TILE_COORDS {
-    tag "${meta.id}"
-    debug params.debug
-
-    label "small_mem"
-
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "quay.io/bioinfotongli/tiled_cellpose:${container_version}":
-        "quay.io/bioinfotongli/tiled_cellpose:${container_version}"}"
-
-    publishDir params.out_dir + "/slice_jsons"
-
-    input:
-    tuple val(meta), path(file_in)
-
-    output:
-    tuple val(meta), path("${stem}/slices.csv"), emit: tile_coords
-    path "versions.yml"           , emit: versions
-
-    script:
-    stem = meta.id
-    def args = task.ext.args ?: ''  
-    """
-    /opt/conda/bin/python /scripts/slice_image.py run \\
-        --image ${file_in} \\
-        --out "${stem}" \\
-        ${args}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        : \$(echo \$(/scripts/slice_image.py version 2>&1) | sed 's/^.*slice_image.py //; s/Using.*\$//' ))
-    END_VERSIONS
-    """
-}
 
 process MERGE_OUTLINES {
     tag "${meta.id}"
