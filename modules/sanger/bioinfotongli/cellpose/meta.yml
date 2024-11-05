@@ -1,0 +1,51 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/yaml-schema.json
+name: "bioinfotongli_cellpose"
+description: A wrapper of Cellpose: a generalist algorithm for cellular segmentation
+keywords:
+  - segmentation
+  - imaging
+  - image_analysis
+  - deep-learning
+tools:
+  - "bioinfotongli":
+      description: "cellpose is an anatomical segmentation algorithm written in Python 3 by Carsen Stringer and Marius Pachitariu."
+      homepage: "https://www.cellpose.org/"
+      documentation: "https://cellpose.readthedocs.io/en/latest/"
+      tool_dev_url: "https://github.com/MouseLand/cellpose"
+      doi: "https://doi.org/10.1038/s41592-020-01018-x"
+      licence: ""
+
+input:
+  # Only when we have meta
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'test', use_gpu:true, channels:[1,2] ]`
+
+  - imgs:
+      type: file
+      description: raw images for segmentation
+      pattern: "*.{tif,ome.tif,ome.tiff,png}"
+
+output:
+  #Only when we have meta
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'test', use_gpu:true, channels:[0,1] ]`
+
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+
+  - segmentation:
+      type: file
+      description: folder contains segmentation information
+      pattern: "*"
+
+authors:
+  - "@BioinfoTongLI"
