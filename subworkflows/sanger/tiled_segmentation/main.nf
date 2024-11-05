@@ -60,7 +60,7 @@ workflow TILED_SEGMENTATION {
     ch_versions = ch_versions.mix(GENERATE_TILE_COORDS.out.versions.first())
 
     images_tiles = GENERATE_TILE_COORDS.out.tile_coords.splitCsv(header:true, sep:",").map{ meta, coords ->
-        [meta, coords.X1, coords.Y1, coords.X2, coords.Y2]
+        [meta, coords.X_MIN, coords.Y_MIN, coords.X_MAX, coords.Y_MAX]
     }
 
     if (method == "CELLPOSE") {

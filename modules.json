@@ -1,72 +1,56 @@
 {
-    "name": "",
-    "homePage": "",
-    "repos": {
-        "git@github.com:BioinfoTongLI/modules.git": {
-            "modules": {
-                "sanger": {
-                    "bioinfotongli/cellpose": {
-                        "branch": "develop",
-                        "git_sha": "b3a4d163ad993f7793fc329ffc85db31b560ce15",
-                        "installed_by": [
-                            "tiled_segmentation"
-                        ]
-                    },
-                    "bioinfotongli/extractpeakprofile": {
-                        "branch": "develop",
-                        "git_sha": "1b3911ca039be5074507a4f9f8cd76c08444b583",
-                        "installed_by": [
-                            "modules"
-                        ]
-                    },
-                    "bioinfotongli/generatetiles": {
-                        "branch": "develop",
-                        "git_sha": "85802a51b0d32a8b1e6972c27d1461aa131e1824",
-                        "installed_by": [
-                            "tiled_segmentation"
-                        ]
-                    },
-                    "bioinfotongli/microaligner": {
-                        "branch": "develop",
-                        "git_sha": "1b3911ca039be5074507a4f9f8cd76c08444b583",
-                        "installed_by": [
-                            "microaligner_registration"
-                        ]
-                    },
-                    "postcode": {
-                        "branch": "develop",
-                        "git_sha": "c5d371b5ff1909d84ff7d3627b279751736dee2e",
-                        "installed_by": [
-                            "modules"
-                        ]
-                    }
-                }
-            },
-            "subworkflows": {
-                "sanger": {
-                    "microaligner_registration": {
-                        "branch": "develop",
-                        "git_sha": "0470cd1c31429f2a7f62fd624a7e6b9abfd3902e",
-                        "installed_by": [
-                            "subworkflows"
-                        ]
-                    },
-                    "tiled_segmentation": {
-                        "branch": "develop",
-                        "git_sha": "f237ea5e55c84e5fa6da6040f95683273a71ea62",
-                        "installed_by": [
-                            "subworkflows"
-                        ]
-                    },
-                    "tiled_spotiflow": {
-                        "branch": "develop",
-                        "git_sha": "65cd75c39647116ecb4cf7d8787ef8e9a329093f",
-                        "installed_by": [
-                            "subworkflows"
-                        ]
-                    }
-                }
-            }
+  "name": "",
+  "homePage": "",
+  "repos": {
+    "git@github.com:BioinfoTongLI/modules.git": {
+      "modules": {
+        "sanger": {
+          "bioinfotongli/cellpose": {
+            "branch": "develop",
+            "git_sha": "b3a4d163ad993f7793fc329ffc85db31b560ce15",
+            "installed_by": ["tiled_segmentation"]
+          },
+          "bioinfotongli/extractpeakprofile": {
+            "branch": "develop",
+            "git_sha": "1b3911ca039be5074507a4f9f8cd76c08444b583",
+            "installed_by": ["modules"]
+          },
+          "bioinfotongli/generatetiles": {
+            "branch": "develop",
+            "git_sha": "85802a51b0d32a8b1e6972c27d1461aa131e1824",
+            "installed_by": ["tiled_segmentation"]
+          },
+          "bioinfotongli/microaligner": {
+            "branch": "develop",
+            "git_sha": "1b3911ca039be5074507a4f9f8cd76c08444b583",
+            "installed_by": ["microaligner_registration"]
+          },
+          "postcode": {
+            "branch": "develop",
+            "git_sha": "c5d371b5ff1909d84ff7d3627b279751736dee2e",
+            "installed_by": ["modules"]
+          }
         }
+      },
+      "subworkflows": {
+        "sanger": {
+          "microaligner_registration": {
+            "branch": "develop",
+            "git_sha": "0470cd1c31429f2a7f62fd624a7e6b9abfd3902e",
+            "installed_by": ["subworkflows"]
+          },
+          "tiled_segmentation": {
+            "branch": "develop",
+            "git_sha": "59cfd406f062c98cd4166992da24c39d04b2cf83",
+            "installed_by": ["subworkflows"]
+          },
+          "tiled_spotiflow": {
+            "branch": "develop",
+            "git_sha": "65cd75c39647116ecb4cf7d8787ef8e9a329093f",
+            "installed_by": ["subworkflows"]
+          }
+        }
+      }
     }
+  }
 }
