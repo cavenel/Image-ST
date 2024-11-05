@@ -30,11 +30,7 @@ workflow {
     }
     MICRO_ALIGNER_REGISTRATION(images)
     TILED_SEGMENTATION(MICRO_ALIGNER_REGISTRATION.out.image, params.segmentation_method)
-    TILED_SPOTIFLOW(
-        MICRO_ALIGNER_REGISTRATION.out.image.combine(
-            channel.from(params.chs_to_call_peaks)
-        )
-    )
+    TILED_SPOTIFLOW(MICRO_ALIGNER_REGISTRATION.out.image, params.chs_to_call_peaks)
     // Run the decoding
     EXTRACT_PEAK_PROFILE(MICRO_ALIGNER_REGISTRATION.out.image.join(TILED_SPOTIFLOW.out.spots_csv))
     codebook = channel.from(params.codebook).map { meta, codebook, readouts ->
@@ -55,9 +51,7 @@ workflow {
 workflow RNAScope {
     images = channel.from(params.images)
     TILED_SEGMENTATION(images, channel.from(params.segmentation_method))
-    TILED_SPOTIFLOW(
-        images.combine(channel.from(params.chs_to_call_peaks))
-    )
+    TILED_SPOTIFLOW(images, params.chs_to_call_peaks)
     TO_SPATIALDATA(TILED_SPOTIFLOW.out.spots_csv.combine(TILED_SEGMENTATION.out.wkt, by:0)
         .combine(images, by:0)
         .map(it ->

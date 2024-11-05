@@ -1,48 +1,11 @@
 #!/usr/bin/env/ nextflow
+include { BIOINFOTONGLI_GENERATETILES as GENERATE_TILE_COORDS } from '../../../modules/sanger/bioinfotongli/generatetiles/main'
+include { BIOINFOTONGLI_TILEDSPOTIFLOW } from '../../../modules/sanger/bioinfotongli/tiledspotiflow/main'
 
 container_version = "latest"
 
 params.debug=false
-
-process Spotiflow_call_peaks {
-    debug params.debug
-    tag "${meta.id}"
-
-    label "gpu"
-    label "process_medium"
-
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "quay.io/bioinfotongli/tiled_spotiflow:${container_version}":
-        "quay.io/bioinfotongli/tiled_spotiflow:${container_version}"}"
-    containerOptions = {
-        workflow.containerEngine == "singularity" ? "--cleanenv --nv -B ${params.spotiflow_model_dir}:/tmp/spotiflow_models":
-        ( workflow.containerEngine == "docker" ? "--gpus all -v ${params.spotiflow_model_dir}:/tmp/spotiflow_models": null )
-    }
-    publishDir params.out_dir + "/spotiflow_peaks"
-
-    input:
-    tuple val(meta), path(img), val(ch_ind)
-    
-    output:
-    tuple val(meta), path("${meta.id}_ch_${ch_ind}/ch_${ch_ind}_peaks_Y*_X*.csv"), val(ch_ind), emit: peaks
-    path "versions.yml"           , emit: versions
-
-    script:
-    def args = task.ext.args ?: ''
-    """
-    export SPOTIFLOW_CACHE_DIR=/tmp/spotiflow_models
-    /opt/conda/bin/python /scripts/Spotiflow_call_peaks.py run \
-        -image_path ${img} \
-        -out_dir "${meta.id}" \
-        --ch_ind ${ch_ind} \
-        ${args}
-    
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        : \$(echo \$(Spotiflow_call_peaks.py version 2>&1) | sed 's/^.*Spotiflow_call_peaks.py //; s/Using.*\$//' ))
-    END_VERSIONS
-    """
-}
+params.chs_to_call_peaks = [2]
 
 
 process Spotiflow_merge_peaks {
@@ -57,7 +20,7 @@ process Spotiflow_merge_peaks {
     publishDir params.out_dir + "/spotiflow_peaks"
 
     input:
-    tuple val(meta), path(csvs), val(ch_ind)
+    tuple val(meta), val(ch_ind), path(csvs)
 
     output:
     tuple val(meta), path("${meta.id}_merged_peaks_ch_${ch_ind}.wkt"), emit: merged_peaks
@@ -117,13 +80,19 @@ process Spotiflow_merge_channels {
 workflow TILED_SPOTIFLOW {
     take:
     images 
+    chs_to_call_peaks
 
     main:
     ch_versions = Channel.empty()
-    Spotiflow_call_peaks(images)
-    ch_versions = ch_versions.mix(Spotiflow_call_peaks.out.versions.first())
+    GENERATE_TILE_COORDS(images)
+    images_tiles = GENERATE_TILE_COORDS.out.tile_coords.splitCsv(header:true, sep:",").map{ meta, coords ->
+        [meta, coords.X_MIN, coords.Y_MIN, coords.X_MAX, coords.Y_MAX]
+    }
 
-    Spotiflow_merge_peaks(Spotiflow_call_peaks.out.peaks)
+    BIOINFOTONGLI_TILEDSPOTIFLOW(images_tiles.combine(images, by:0).combine(chs_to_call_peaks))
+    ch_versions = ch_versions.mix(BIOINFOTONGLI_TILEDSPOTIFLOW.out.versions.first())
+
+    Spotiflow_merge_peaks(BIOINFOTONGLI_TILEDSPOTIFLOW.out.peaks.groupTuple(by:[0,1]))
     ch_versions = ch_versions.mix(Spotiflow_merge_peaks.out.versions.first())
 
     Spotiflow_merge_channels(Spotiflow_merge_peaks.out.merged_peaks.groupTuple())
