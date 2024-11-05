@@ -2,7 +2,7 @@
 
 include { REGISTER_AS_SPATIALDATA } from './subworkflows/registration'
 include { MICRO_ALIGNER_REGISTRATION } from './subworkflows/sanger/microaligner_registration/main'
-include { TILED_SEGMENTATION } from '../subworkflows/sanger/tiled_segmentation/main'
+include { TILED_SEGMENTATION } from './subworkflows/sanger/tiled_segmentation/main'
 include { TILED_SPOTIFLOW } from './subworkflows/sanger/tiled_spotiflow/main' 
 include { BIOINFOTONGLI_EXTRACTPEAKPROFILE as EXTRACT_PEAK_PROFILE } from './modules/sanger/bioinfotongli/extractpeakprofile/main'  
 include { POSTCODE } from './modules/sanger/postcode/main'
@@ -20,6 +20,8 @@ params.cell_diameters=[30]
 
 params.codebook = [["id":'' ], "codebook.csv"]
 params.chunk_size = 10000
+params.segmentation_method = "CELLPOSE"
+
 
 workflow {
     images = channel.from(params.images)
@@ -27,7 +29,7 @@ workflow {
         [it[0], it[1].size()]
     }
     MICRO_ALIGNER_REGISTRATION(images)
-    TILED_SEGMENTATION(MICRO_ALIGNER_REGISTRATION.out.image)
+    TILED_SEGMENTATION(MICRO_ALIGNER_REGISTRATION.out.image, params.segmentation_method)
     TILED_SPOTIFLOW(
         MICRO_ALIGNER_REGISTRATION.out.image.combine(
             channel.from(params.chs_to_call_peaks)
@@ -52,7 +54,7 @@ workflow {
 
 workflow RNAScope {
     images = channel.from(params.images)
-    TILED_SEGMENTATION(images)
+    TILED_SEGMENTATION(images, channel.from(params.segmentation_method))
     TILED_SPOTIFLOW(
         images.combine(channel.from(params.chs_to_call_peaks))
     )

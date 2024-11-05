@@ -25,7 +25,7 @@ process GENERATE_TILE_COORDS {
     tuple val(meta), path(file_in)
 
     output:
-    tuple val(meta), path("${stem}/slices.csv"), emit: slices_coords
+    tuple val(meta), path("${stem}/slices.csv"), emit: tile_coords
     path "versions.yml"           , emit: versions
 
     script:
@@ -189,19 +189,22 @@ workflow TILED_SEGMENTATION {
     main:
     ch_versions = Channel.empty()
     GENERATE_TILE_COORDS(images)
-    ch_versions = ch_versions.mix(SLICE.out.versions.first())
+    ch_versions = ch_versions.mix(GENERATE_TILE_COORDS.out.versions.first())
 
-    images_slices = GENERATE_TILE_COORDS.out.slices_coords.splitCsv(header:true, sep:",").map{ meta, coords ->
+    images_tiles = GENERATE_TILE_COORDS.out.tile_coords.splitCsv(header:true, sep:",").map{ meta, coords ->
         [meta, coords.X1, coords.Y1, coords.X2, coords.Y2]
     }
+
     if (method == "CELLPOSE") {
-        CELLPOSE(images_slices.combine(images, by:0).combine(channel.from(params.cell_diameters)))
+        CELLPOSE(images_tiles.combine(images, by:0).combine(channel.from(params.cell_diameters)))
         wkts = CELLPOSE.out.wkts.groupTuple(by:[0,1])
         ch_versions = ch_versions.mix(CELLPOSE.out.versions.first())
     } else if (method == "STARDIST") {
-        STARDIST(images_slices)
+        STARDIST(images_tiles)
         wkts = STARDIST.out.wkts.groupTuple(by:[0,1])
         ch_versions = ch_versions.mix(STARDIST.out.versions.first())
+    } else {
+        error "Invalid segmentation method: ${method}"
     }
     MERGE_OUTLINES(wkts)
     ch_versions = ch_versions.mix(MERGE_OUTLINES.out.versions.first())
