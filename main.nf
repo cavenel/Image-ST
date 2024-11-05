@@ -38,7 +38,7 @@ workflow {
     codebook = channel.from(params.codebook).map { meta, codebook, readouts ->
         [meta,
         file(codebook, checkIfExists: true, type:'file'),
-        readouts]
+        file(readouts, checkIfExists: false, type:'file')]
     }
     POSTCODE(EXTRACT_PEAK_PROFILE.out.peak_profile.join(codebook).join(n_image_ch))
     // Contrsuct the spatial data object

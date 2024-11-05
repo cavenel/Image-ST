@@ -56,7 +56,7 @@ process CELLPOSE {
         "quay.io/bioinfotongli/tiled_cellpose:${container_version}":
         "quay.io/bioinfotongli/tiled_cellpose:${container_version}"}"
     containerOptions = {
-            workflow.containerEngine == "singularity" ? "--cleanenv --nv -B ${params.cellpose_model_dir}:/cellpose_models -B ${params.NUMBA_CACHE_DIR}:/tmp/numba_cache":
+            workflow.containerEngine == "singularity" ? "--cleanenv --nv -B ${params.cellpose_model_dir}:./cellpose_models -B ${params.NUMBA_CACHE_DIR}:./numba_cache":
             ( workflow.containerEngine == "docker" ? "--gpus all -v ${params.cellpose_model_dir}:/cellpose_models": null )
     }
 
@@ -76,8 +76,8 @@ process CELLPOSE {
     stem = "${meta.id}-${baseName}-diam_${cell_diameter}"
     def args = task.ext.args ?: ''  
     """
-    export CELLPOSE_LOCAL_MODELS_PATH=/cellpose_models
-    export NUMBA_CACHE_DIR=/tmp/numba_cache
+    export CELLPOSE_LOCAL_MODELS_PATH=./cellpose_models
+    export NUMBA_CACHE_DIR=./numba_cache
     /opt/conda/bin/python /scripts/cellpose_seg.py run \
         --image ${image} \
         --x_min ${x_min} \
