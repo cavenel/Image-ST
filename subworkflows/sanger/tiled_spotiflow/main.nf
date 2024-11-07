@@ -2,7 +2,7 @@
 include { BIOINFOTONGLI_GENERATETILES as GENERATE_TILE_COORDS } from '../../../modules/sanger/bioinfotongli/generatetiles/main'
 include { BIOINFOTONGLI_TILEDSPOTIFLOW } from '../../../modules/sanger/bioinfotongli/tiledspotiflow/main'
 
-container_version = "latest"
+container_version = "0.1.0"
 
 params.debug=false
 params.chs_to_call_peaks = [2]

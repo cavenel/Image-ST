@@ -1,4 +1,4 @@
-container_version = "latest"
+container_version = "0.0.1"
 params.debug = false
 
 process BIOINFOTONGLI_GENERATETILES {

@@ -1,4 +1,5 @@
 params.debug = false
+container_version = "0.1.0"
 
 process POSTCODE {
     debug params.debug
@@ -8,8 +9,8 @@ process POSTCODE {
     cpus 1
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'quay.io/bioinfotongli/postcode:latest':
-        'quay.io/bioinfotongli/postcode:latest'}"
+        'quay.io/bioinfotongli/postcode:${container_version}':
+        'quay.io/bioinfotongli/postcode:${container_version}'}"
     publishDir params.out_dir + "/PoSTcode_decoding_output"
 
     input:

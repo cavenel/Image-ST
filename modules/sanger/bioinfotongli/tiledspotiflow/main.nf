@@ -1,4 +1,4 @@
-container_version = "latest"
+container_version = "0.1.0"
 
 params.debug = false
 params.spotiflow_model_dir = "./"
