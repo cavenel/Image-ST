@@ -12,6 +12,7 @@ from xarray import DataArray
 from spatialdata.transformations.transformations import Identity
 import pandas as pd
 import anndata
+import spatialdata as sd
 from shapely import from_wkt, MultiPoint, MultiPolygon
 import numpy as np
 from skimage.segmentation import expand_labels
@@ -56,7 +57,8 @@ def main(
         expansion_in_pixels:int = -1,
         image_models_kwargs: Mapping[str, Any] = MappingProxyType({}),
         imread_kwargs: Mapping[str, Any] = MappingProxyType({}),
-        save_label_img:bool = False
+        save_label_img:bool = False,
+        cell_props:list = ['label', 'area', 'intensity_mean', "centroid", "axis_major_length", "axis_minor_length"]
     ):
 
     dapi_image = imread(registered_image, **imread_kwargs)[raw_image_channels_to_save]
@@ -110,7 +112,7 @@ def main(
     props_dict = regionprops_table(
         np.squeeze(lab_img).astype(np.int16),
         intensity_image=np.array(dapi_image).transpose(1, 2, 0),
-        properties=['label', 'area', 'intensity_mean', "centroid", "axis_major_length", "axis_minor_length"]
+        properties=cell_props
     )
     props_df = pd.DataFrame(props_dict)
     props_df.to_csv(out_name.replace('.sdata', '_cell_props.csv'))
@@ -127,7 +129,7 @@ def main(
         (spots[y_col]/pixelsize).astype(int),
         (spots[x_col]/pixelsize).astype(int)
     ]
-    spots['cell_id'] = cell_ids
+    spots['cell_id'] = cell_ids.astype(int)
 
     logger.info("Create count matrix")
     count_matrix = spots.pivot_table(index='cell_id', columns=feature_col, aggfunc='size', fill_value=0)
@@ -136,16 +138,22 @@ def main(
     count_matrix['num_spots'] = spots.shape[0]
     count_matrix.to_csv(out_name.replace('.sdata', '_count_matrix.csv'))
 
-    logger.info("Construct anndata object")
-    adata = anndata.AnnData(X=count_matrix.values)
+    props_df_intersect = props_df[props_df['label'].isin(count_matrix.index)]
 
-    REGION="cell_shapes"
+    logger.info("Construct anndata object")
+    adata = anndata.AnnData(
+        X=count_matrix.values,
+        obs=props_df_intersect
+    )
+
+    REGION="cell_labels"
     REGION_KEY = "region"
     instance_key = "instance_id"
     adata.obs[instance_key] = adata.obs.index.astype(int)
     adata.var_names = count_matrix.columns
     adata.var_names_make_unique()
     adata.obs[REGION_KEY] = REGION
+
     table = TableModel.parse(
         adata,
         region=REGION,
