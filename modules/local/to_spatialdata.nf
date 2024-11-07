@@ -1,4 +1,4 @@
-VERSION="latest"
+VERSION="0.2.2"
 
 params.debug=false
 
