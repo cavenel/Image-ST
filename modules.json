@@ -5,19 +5,34 @@
     "git@github.com:BioinfoTongLI/modules.git": {
       "modules": {
         "sanger": {
+          "bioinfotongli/cellpose": {
+            "branch": "develop",
+            "git_sha": "f879f8f3c917335abbf99f656c3b57d477cdab1c",
+            "installed_by": ["tiled_segmentation"]
+          },
           "bioinfotongli/extractpeakprofile": {
             "branch": "develop",
-            "git_sha": "1b3911ca039be5074507a4f9f8cd76c08444b583",
+            "git_sha": "52a0eafaa86b3f2d2141403da7e3e082556eaabc",
             "installed_by": ["modules"]
+          },
+          "bioinfotongli/generatetiles": {
+            "branch": "develop",
+            "git_sha": "f2d8623f03dce934a2fca8b6e282a6bd234e8edd",
+            "installed_by": ["tiled_segmentation", "tiled_spotiflow"]
           },
           "bioinfotongli/microaligner": {
             "branch": "develop",
             "git_sha": "1b3911ca039be5074507a4f9f8cd76c08444b583",
             "installed_by": ["microaligner_registration"]
           },
+          "bioinfotongli/tiledspotiflow": {
+            "branch": "develop",
+            "git_sha": "52a0eafaa86b3f2d2141403da7e3e082556eaabc",
+            "installed_by": ["tiled_spotiflow"]
+          },
           "postcode": {
             "branch": "develop",
-            "git_sha": "c5d371b5ff1909d84ff7d3627b279751736dee2e",
+            "git_sha": "52a0eafaa86b3f2d2141403da7e3e082556eaabc",
             "installed_by": ["modules"]
           }
         }
@@ -29,14 +44,14 @@
             "git_sha": "0470cd1c31429f2a7f62fd624a7e6b9abfd3902e",
             "installed_by": ["subworkflows"]
           },
-          "tiled_cellpose": {
+          "tiled_segmentation": {
             "branch": "develop",
-            "git_sha": "c5d371b5ff1909d84ff7d3627b279751736dee2e",
+            "git_sha": "52a0eafaa86b3f2d2141403da7e3e082556eaabc",
             "installed_by": ["subworkflows"]
           },
           "tiled_spotiflow": {
             "branch": "develop",
-            "git_sha": "65cd75c39647116ecb4cf7d8787ef8e9a329093f",
+            "git_sha": "52a0eafaa86b3f2d2141403da7e3e082556eaabc",
             "installed_by": ["subworkflows"]
           }
         }

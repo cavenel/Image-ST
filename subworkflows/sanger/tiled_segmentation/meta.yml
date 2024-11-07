@@ -6,7 +6,7 @@ keywords:
   - segmentation
   - instance segmentation
   - deep-learning
-## TODO nf-core: Add a list of the modules and/or subworkflows used in the subworkflow
+  - large-scale image processing
 components:
   - 
 input:
@@ -15,9 +15,9 @@ input:
       description: |
         The input channel containing the image files
         Structure: [ val(meta), path(image) ]
-      pattern: "*.{tif/tiff}"
+      pattern: "*.ome.{tif/tiff}"
 output:
-  - csi:
+  - wkt:
       type: file
       description: |
         2D segmentation polygons in wkt format
