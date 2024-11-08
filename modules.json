@@ -32,7 +32,7 @@
           },
           "postcode": {
             "branch": "develop",
-            "git_sha": "52a0eafaa86b3f2d2141403da7e3e082556eaabc",
+            "git_sha": "d7b97aa688fefa9409276f5240eee39f9128cd73",
             "installed_by": ["modules"]
           }
         }
