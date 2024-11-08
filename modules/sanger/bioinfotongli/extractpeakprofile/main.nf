@@ -6,8 +6,8 @@ process BIOINFOTONGLI_EXTRACTPEAKPROFILE {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'quay.io/bioinfotongli/extract_peak_profile:${container_version}':
-        'quay.io/bioinfotongli/extract_peak_profile:${container_version}' }"
+        "quay.io/bioinfotongli/extract_peak_profile:${container_version}":
+        "quay.io/bioinfotongli/extract_peak_profile:${container_version}" }"
     publishDir params.out_dir + "/peak_profiles/"
 
     input:
