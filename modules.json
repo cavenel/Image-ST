@@ -12,7 +12,7 @@
           },
           "bioinfotongli/extractpeakprofile": {
             "branch": "develop",
-            "git_sha": "52a0eafaa86b3f2d2141403da7e3e082556eaabc",
+            "git_sha": "2890d0080b9a08851ae55bdb7632b5264385acc1",
             "installed_by": ["modules"]
           },
           "bioinfotongli/generatetiles": {
