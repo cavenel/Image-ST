@@ -17,7 +17,7 @@
           },
           "bioinfotongli/generatetiles": {
             "branch": "develop",
-            "git_sha": "f2d8623f03dce934a2fca8b6e282a6bd234e8edd",
+            "git_sha": "8a282831cfa4d56c93f2a549249d95ac73fc65d0",
             "installed_by": ["tiled_segmentation", "tiled_spotiflow"]
           },
           "bioinfotongli/microaligner": {
