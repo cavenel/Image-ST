@@ -27,8 +27,8 @@
           },
           "bioinfotongli/tiledspotiflow": {
             "branch": "develop",
-            "git_sha": "52a0eafaa86b3f2d2141403da7e3e082556eaabc",
-            "installed_by": ["tiled_spotiflow"]
+            "git_sha": "37cd0b0bfe4406d89fa99265891d57c1c4817a4e",
+            "installed_by": ["modules", "tiled_spotiflow"]
           },
           "postcode": {
             "branch": "develop",

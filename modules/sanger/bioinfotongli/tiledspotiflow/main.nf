@@ -1,7 +1,6 @@
-container_version = "0.1.0"
+container_version = "0.5.1"
 
 params.debug = false
-params.spotiflow_model_dir = "./"
 
 process BIOINFOTONGLI_TILEDSPOTIFLOW {
     debug params.debug
@@ -14,8 +13,8 @@ process BIOINFOTONGLI_TILEDSPOTIFLOW {
         "quay.io/bioinfotongli/tiled_spotiflow:${container_version}":
         "quay.io/bioinfotongli/tiled_spotiflow:${container_version}"}"
     containerOptions = {
-        workflow.containerEngine == "singularity" ? "--cleanenv --nv -B ${params.spotiflow_model_dir}:${task.workDir}/models":
-        ( workflow.containerEngine == "docker" ? "--gpus all -v ${params.spotiflow_model_dir}:${task.workDir}/models": null )
+        workflow.containerEngine == "singularity" ? "--cleanenv --nv":
+        ( workflow.containerEngine == "docker" ? "--gpus all": null )
     }
     publishDir params.out_dir + "/spotiflow_peaks"
 
@@ -31,7 +30,6 @@ process BIOINFOTONGLI_TILEDSPOTIFLOW {
     out_dir = "${meta.id}_ch_${ch_ind}"
     out_name = "ch_${ch_ind}_peaks_Y${y_min}_X${x_min}.csv"
     """
-    export SPOTIFLOW_CACHE_DIR=${task.workDir}/models
     /opt/conda/bin/python /scripts/Spotiflow_call_peaks.py run \
         -image_path ${image} \
         -out_dir "${out_dir}" \
