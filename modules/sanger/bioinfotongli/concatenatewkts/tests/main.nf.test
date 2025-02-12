@@ -1,25 +1,25 @@
-// TODO nf-core: Once you have added the required tests, please run the following command to build this file:
-// nf-core modules test bioinfotongli/generatetiles
+// nf-core modules test bioinfotongli/concatenatewkts
 nextflow_process {
 
-    name "Test Process BIOINFOTONGLI_GENERATETILES"
+    name "Test Process BIOINFOTONGLI_CONCATENATEWKTS"
     script "../main.nf"
-    config "./nextflow.config"
-    process "BIOINFOTONGLI_GENERATETILES"
+    process "BIOINFOTONGLI_CONCATENATEWKTS"
 
     tag "modules"
     tag "modules_sanger"
     tag "bioinfotongli"
-    tag "bioinfotongli/generatetiles"
+    tag "bioinfotongli/concatenatewkts"
 
-    test("mouse_heart - tiff") {
+    test("mouse heart - wkt ") {
 
         when {
             process {
                 """
                 input[0] = [
-                    [ id:'test'], // meta map
-                    file(params.modules_testdata_base_path + 'imaging/tiff/mindagap.mouse_heart.wga.tiff', checkIfExists: true),
+                    [ id:'test' ], // meta map
+                    [
+                        file(params.modules_testdata_base_path + 'test_merged_peaks_ch_-1.wkt', checkIfExists: true),
+                    ]
                 ]
                 """
             }
@@ -34,7 +34,7 @@ nextflow_process {
 
     }
 
-    test("mouse_heart - tiff - stub") {
+    test("mouse heart - wkt - stub") {
 
         options "-stub"
 
@@ -42,8 +42,10 @@ nextflow_process {
             process {
                 """
                 input[0] = [
-                    [ id:'test',], // meta map
-                    file(params.modules_testdata_base_path + 'imaging/tiff/mindagap.mouse_heart.wga.tiff', checkIfExists: true),
+                    [ id:'test' ], // meta map
+                    [
+                        file(params.modules_testdata_base_path + 'test_merged_peaks_ch_-1.wkt', checkIfExists: true),
+                    ]
                 ]
                 """
             }

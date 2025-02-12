@@ -8,44 +8,44 @@ keywords:
   - slicing
 tools:
   - "bioinfotongli":
-      description: ""
+      description: "A simple script to generate tiles from an 2D image file"
       homepage: ""
       documentation: ""
       tool_dev_url: ""
       doi: ""
-      licence: 
+      licence: MIT
       identifier: 
 
 input:
-  # Only when we have meta
-  - meta:
+  - - meta:
       type: map
       description: |
         Groovy Map containing sample information
-        e.g. `[ id:'test', channels:[1,2] ]`
+        e.g. `[ id:'test' ]`
 
-  - imgs:
-      type: file
-      description: raw images for segmentation
-      pattern: "*.{tif,ome.tif,ome.tiff}"
+    - image:
+        type: file
+        description: raw image to be tiled
+        pattern: "*.{tif,ome.tif,ome.tiff}"
 
 output:
   #Only when we have meta
-  - meta:
+  - - meta:
       type: map
       description: |
         Groovy Map containing sample information
-        e.g. `[ id:'test', channels:[0,1] ]`
+        e.g. `[ id:'test' ]`
+    - tile_coords:
+        type: file
+        description: a csv file contains the information of tiles
+        pattern: "*.csv"
 
   - versions:
       type: file
       description: File containing software versions
       pattern: "versions.yml"
 
-  - segmentation:
-      type: file
-      description: a csv file contains the information of tiles
-      pattern: "*.csv"
+  
 
 authors:
   - "@BioinfoTongLI"
