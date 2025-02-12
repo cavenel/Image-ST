@@ -14,38 +14,65 @@ tools:
       documentation: "https://cellpose.readthedocs.io/en/latest/"
       tool_dev_url: "https://github.com/MouseLand/cellpose"
       doi: "https://doi.org/10.1038/s41592-020-01018-x"
-      licence: ""
+      licence: ["BSD-3-Clause license"]
 
 input:
-  # Only when we have meta
   - meta:
       type: map
       description: |
         Groovy Map containing sample information
-        e.g. `[ id:'test', use_gpu:true, channels:[1,2] ]`
+        e.g. `[ id:'test' ]`
 
+  - x_min:
+      type: integer
+      description: x_min of the region of interest
+
+  - x_max:
+      type: integer
+      description: x_max of the region of interest
+
+  - y_min:
+      type: integer
+      description: y_min of the region of interest
+
+  - y_max:
+      type: integer
+      description: y_max of the region of interest
+  
   - imgs:
       type: file
       description: raw images for segmentation
-      pattern: "*.{tif,ome.tif,ome.tiff,png}"
+      pattern: "*.{tif,ome.tif,ome.tiff}"
 
+  - cell_diameter:
+      type: integer
+      description: expected cell diameter in pixels
+  
 output:
-  #Only when we have meta
   - meta:
       type: map
-      description: |
+      description:
         Groovy Map containing sample information
-        e.g. `[ id:'test', use_gpu:true, channels:[0,1] ]`
+        e.g. `[ id:'test' ]`
 
   - versions:
       type: file
       description: File containing software versions
       pattern: "versions.yml"
 
-  - segmentation:
+  - "${stem}/${stem}_cp_outlines.txt":
       type: file
-      description: folder contains segmentation information
-      pattern: "*"
+      description: 
+      pattern: "*.txt"
 
+  - "${stem}/${stem}_cp_outlines.wkt":
+      type: file
+      description: 
+      pattern: "*.wkt"
+
+  - "${stem}/${stem}*png":
+      type: file
+      description: 
+      pattern: "*.png"
 authors:
   - "@BioinfoTongLI"
