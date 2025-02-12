@@ -7,15 +7,25 @@ keywords:
   - instance segmentation
   - deep-learning
   - large-scale image processing
-components:
-  - 
+
 input:
-  - images:
-      type: file
+  - meta:
+      type: map
       description: |
-        The input channel containing the image files
-        Structure: [ val(meta), path(image) ]
-      pattern: "*.ome.{tif/tiff}"
+        Groovy Map containing sample information
+        e.g. `[ id:'test' ]`
+  - images:
+        type: file
+        description: |
+          The input channel containing the image files
+          Structure: [ val(meta), path(image) ]
+        pattern: "*.ome.{tif/tiff}"
+  - method:
+      type: string
+      description: |
+        The method to use for segmentation
+        Options: [ 'cellpose', 'stardist', 'instanseg' ]
+      
 output:
   - wkt:
       type: file

@@ -7,7 +7,12 @@
         "sanger": {
           "bioinfotongli/cellpose": {
             "branch": "develop",
-            "git_sha": "f879f8f3c917335abbf99f656c3b57d477cdab1c",
+            "git_sha": "331a0800e7905b3fb9d0cb87399ca545bc46b95d",
+            "installed_by": ["tiled_segmentation"]
+          },
+          "bioinfotongli/deepcell": {
+            "branch": "develop",
+            "git_sha": "5e4a23a5746ba9aa5b8b31fac720675dac7bf13c",
             "installed_by": ["tiled_segmentation"]
           },
           "bioinfotongli/extractpeakprofile": {
@@ -20,15 +25,30 @@
             "git_sha": "c54c6d2166799cfc8dcfe74bd8f987632cf25993",
             "installed_by": ["tiled_segmentation", "tiled_spotiflow"]
           },
+          "bioinfotongli/instanseg": {
+            "branch": "develop",
+            "git_sha": "82babde2a0747210c8eb206f56cd6b09e6626a2e",
+            "installed_by": ["tiled_segmentation"]
+          },
           "bioinfotongli/microaligner": {
             "branch": "develop",
             "git_sha": "1b3911ca039be5074507a4f9f8cd76c08444b583",
             "installed_by": ["microaligner_registration"]
           },
+          "bioinfotongli/stardist": {
+            "branch": "develop",
+            "git_sha": "fd9b2956b41ac2050b7a22dc94985e5f22128a43",
+            "installed_by": ["tiled_segmentation"]
+          },
           "bioinfotongli/tiledspotiflow": {
             "branch": "develop",
             "git_sha": "37cd0b0bfe4406d89fa99265891d57c1c4817a4e",
             "installed_by": ["modules", "tiled_spotiflow"]
+          },
+          "mergeoutlines": {
+            "branch": "develop",
+            "git_sha": "c2f4a80167f0f42d81d4ac687773015239393cb4",
+            "installed_by": ["tiled_segmentation"]
           },
           "postcode": {
             "branch": "develop",
@@ -46,7 +66,7 @@
           },
           "tiled_segmentation": {
             "branch": "develop",
-            "git_sha": "52a0eafaa86b3f2d2141403da7e3e082556eaabc",
+            "git_sha": "341505009e94884c37f0e84d0208b19b873c6b9a",
             "installed_by": ["subworkflows"]
           },
           "tiled_spotiflow": {
