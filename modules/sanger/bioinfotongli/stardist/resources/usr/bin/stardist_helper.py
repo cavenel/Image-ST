@@ -98,7 +98,7 @@ def segment(
     wkt = []
     if coord.shape[0] != 0:    
         for polygon in coord:
-           flat_coords = [(xy[1], xy[0]) for xy in polygon.reshape(-1, 2)]
+           flat_coords = [(xy[1] + x_min, xy[0] + y_min) for xy in polygon.reshape(-1, 2)]
            wkt.append(
                 "POLYGON ((" + ", ".join(f"{x} {y}" for x, y in flat_coords + [flat_coords[0]]) + "))"
             )

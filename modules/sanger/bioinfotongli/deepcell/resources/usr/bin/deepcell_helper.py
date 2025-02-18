@@ -14,6 +14,7 @@ from pathlib import Path
 import tensorflow as tf
 from shapely.geometry import MultiPolygon, Polygon
 from shapely import to_wkt
+from shapely.affinity import translate
 from scipy import ndimage
 import cv2
 import tifffile
@@ -44,7 +45,7 @@ def load_tile(
         else:
             image = zgroup[resolution_level]
 
-        crop = image[y_min:y_max, x_min:y_max]
+        crop = image[y_min:y_max, x_min:x_max]
     else:
         # This will load the whole slice first and then crop it. So, large memroy footprint
         img = AICSImage(image)
@@ -70,7 +71,10 @@ def get_largest_polygon(multi_polygon: MultiPolygon):
         if area >= largest_area:
             largest_area = area
         largest_polygon = polygon
-    return largest_polygon
+    if largest_polygon is None:
+        return multi_polygon 
+    else:
+        return largest_polygon
 
 
 def get_shapely(label):
@@ -130,7 +134,11 @@ def main(
 
     polys = get_shapely(np.squeeze(segmentation_predictions).astype(np.uint16))
     with open(output_name, "wt") as f:
-        f.write(to_wkt(MultiPolygon(list(polys[1].values()))))
+        f.write(
+            to_wkt(
+                translate(MultiPolygon(list(polys[1].values())), xoff=x_min, yoff=y_min)
+            )
+        )
     
 
 if __name__ == "__main__":

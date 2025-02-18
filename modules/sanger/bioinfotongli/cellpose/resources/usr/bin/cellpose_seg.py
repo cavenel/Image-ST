@@ -52,7 +52,7 @@ def main(
         else:
             image = zgroup[resolution_level]
 
-        crop = image[y_min:y_max, x_min:y_max]
+        crop = image[y_min:y_max, x_min:x_max]
     else:
         # This will load the whole slice first and then crop it. So, large memroy footprint
         img = AICSImage(image)

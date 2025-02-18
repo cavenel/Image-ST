@@ -29,7 +29,11 @@ def merge(sample_id:str, *wkts: list):
         with open(wkt_file, "rt") as wkt:
             lines = wkt.read()
             if len(lines) > 0:
-                polygons.append(shapely.wkt.loads(lines).buffer(-1).simplify(1))
+                poly = shapely.wkt.loads(lines).buffer(-1).simplify(1)
+                if poly.is_valid:
+                    polygons.append(poly)
+                else:
+                    logging.warning(f"Invalid polygon in {wkt_file}")
             else:
                 print(lines)
                 logging.warning(f"Empty file: {wkt_file}")
