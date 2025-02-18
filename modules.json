@@ -76,7 +76,7 @@
           },
           "tiled_segmentation": {
             "branch": "develop",
-            "git_sha": "341505009e94884c37f0e84d0208b19b873c6b9a",
+            "git_sha": "d5371013a488b3bb9ffd4f915b1b68cbbd520977",
             "installed_by": ["subworkflows"]
           },
           "tiled_spotiflow": {

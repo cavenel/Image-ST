@@ -22,19 +22,19 @@ workflow TILED_SEGMENTATION {
     tiles_and_images = images_tiles.combine(images, by:0)
     if (method == "CELLPOSE") {
         CELLPOSE(tiles_and_images.combine(channel.from(params.cell_diameters)))
-        wkts = CELLPOSE.out.wkts.groupTuple(by:[0,1])
+        wkts = CELLPOSE.out.wkts.groupTuple(by:0)
         ch_versions = ch_versions.mix(CELLPOSE.out.versions.first())
     } else if (method == "STARDIST") {
         STARDIST(tiles_and_images)
-        wkts = STARDIST.out.wkts.groupTuple(by:[0,1])
+        wkts = STARDIST.out.wkts.groupTuple(by:0)
         ch_versions = ch_versions.mix(STARDIST.out.versions.first())
     } else if (method == "INSTANSEG") {
         INSTANSEG(tiles_and_images)
-        wkts = INSTANSEG.out.wkts.groupTuple(by:[0,1])
+        wkts = INSTANSEG.out.wkts.groupTuple(by:0)
         ch_versions = ch_versions.mix(INSTANSEG.out.versions.first())
     } else if (method == "DEEPCELL") {
         DEEPCELL(tiles_and_images)
-        wkts = DEEPCELL.out.wkts.groupTuple(by:[0,1])
+        wkts = DEEPCELL.out.wkts.groupTuple(by:0)
         ch_versions = ch_versions.mix(DEEPCELL.out.versions.first())
     } else {
         error "Invalid segmentation method: ${method}"
