@@ -6,18 +6,28 @@ keywords:
   - segmentation
   - instance segmentation
   - deep-learning
-## TODO nf-core: Add a list of the modules and/or subworkflows used in the subworkflow
-components:
-  - 
+  - large-scale image processing
+
 input:
-  - images:
-      type: file
+  - meta:
+      type: map
       description: |
-        The input channel containing the image files
-        Structure: [ val(meta), path(image) ]
-      pattern: "*.{tif/tiff}"
+        Groovy Map containing sample information
+        e.g. `[ id:'test' ]`
+  - images:
+        type: file
+        description: |
+          The input channel containing the image files
+          Structure: [ val(meta), path(image) ]
+        pattern: "*.ome.{tif/tiff}"
+  - method:
+      type: string
+      description: |
+        The method to use for segmentation
+        Options: [ 'cellpose', 'stardist', 'instanseg' ]
+      
 output:
-  - csi:
+  - wkt:
       type: file
       description: |
         2D segmentation polygons in wkt format

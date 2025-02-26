@@ -1,4 +1,4 @@
-VERSION="latest"
+VERSION="0.2.2"
 
 params.debug=false
 
@@ -9,8 +9,8 @@ process TO_SPATIALDATA {
     cache true 
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "bioinfotongli/spatialdata:${VERSION}" :
-        "bioinfotongli/spatialdata:${VERSION}" }"
+        "quay.io/bioinfotongli/spatialdata:${VERSION}" :
+        "quay.io/bioinfotongli/spatialdata:${VERSION}" }"
     publishDir params.out_dir + "/spatialdata", mode: 'copy'
 
     input:
@@ -19,6 +19,7 @@ process TO_SPATIALDATA {
     output:
     tuple val(meta), path("${out_name}"), emit: spatialdata
     tuple val(meta), path("${prefix}_count_matrix.csv"), optional: true
+    tuple val(meta), path("${prefix}_cell_props.csv"), optional: true
     path "versions.yml"           , emit: versions
 
     when:

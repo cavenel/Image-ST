@@ -1,0 +1,128 @@
+nextflow_workflow {
+
+    name "Test Subworkflow TILED_SEGMENTATION"
+    script "../main.nf"
+    config "./nextflow.config"
+    workflow "TILED_SEGMENTATION"
+
+    tag "subworkflows"
+    tag "subworkflows_sanger"
+    tag "subworkflows/tiled_segmentation"
+
+    test("nuclear - tif - cellpose") {
+
+        when {
+            workflow {
+                """
+                input[0] = [
+                    [ id:'test'], // meta map
+                    file(params.modules_testdata_base_path + 'imaging/segmentation/nuclear_image.tif', checkIfExists: true),
+                ]
+                input[1] = 'CELLPOSE'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("nuclear - tif - stardist") {
+
+        when {
+            workflow {
+                """
+                input[0] = [
+                    [ id:'test'], // meta map
+                    file(params.modules_testdata_base_path + 'imaging/segmentation/nuclear_image.tif', checkIfExists: true),
+                ]
+                input[1] = 'STARDIST'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("nuclear - tif - instanseg") {
+
+        when {
+            workflow {
+                """
+                input[0] = [
+                    [ id:'test'], // meta map
+                    file(params.modules_testdata_base_path + 'imaging/segmentation/nuclear_image.tif', checkIfExists: true),
+                ]
+                input[1] = 'INSTANSEG'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("nuclear - tif - deepcell") {
+
+        when {
+            workflow {
+                """
+                input[0] = [
+                    [ id:'test'], // meta map
+                    file(params.modules_testdata_base_path + 'imaging/segmentation/nuclear_image.tif', checkIfExists: true),
+                ]
+                input[1] = 'DEEPCELL'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("nuclear - tif - stub") {
+
+        options "-stub"
+
+        when {
+            workflow {
+                """
+                input[0] = [
+                    [ id:'test'], // meta map
+                    file(params.modules_testdata_base_path + 'imaging/segmentation/nuclear_image.tif', checkIfExists: true),
+                ]
+                input[1] = 'CELLPOSE'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+}
