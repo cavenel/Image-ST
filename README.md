@@ -55,12 +55,12 @@ process {
                 storeDir = "./output/spotiflow_peaks/"
         }
 
-        withName: Spotiflow_merge_tiled_peaks {
+        withName: BIOINFOTONGLI_MERGEPEAKS {
                 memory = {100.Gb * task.attempt}
                 storeDir = "./output/spotiflow_peaks/"
         }
 
-        withName: Spotiflow_merge_channels {
+        withName: BIOINFOTONGLI_CONCATENATEWKTS {
                 memory = {100.Gb * task.attempt}
                 storeDir = "./output/spotiflow_peaks/"
         }
@@ -92,12 +92,13 @@ cell_diameters: [15]
 chs_to_call_peaks: [1,2,3,4,6,7,8,9,11,12,13,14,16,17,18,19,21,22,23,24,26,27,28,29]
 codebook:
   - ['id': "ISS_exp9", "./codebook.csv", "./dummy.txt"]
+segmentation_method: "CELLPOSE"
 
 out_dir: "./output"
 ```
 4. Run the pipeline
 ```
-nextflow run ./Image-ST/main.nf -profile lsf,singularity -c run.config -params-file iss.yaml -resume
+nextflow run ./Image-ST/main.nf -profile lsf,singularity -c run.config -params-file iss.yaml -entry RUN_DECODING -resume
 ```
 5. Check the output in the specified storeDir.
 
