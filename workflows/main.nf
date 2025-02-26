@@ -9,12 +9,6 @@ include { POSTCODE } from '../modules/sanger/postcode/main'
 include { TO_SPATIALDATA } from '../modules/local/to_spatialdata' 
 
 
-params.chs_to_call_peaks = [1, 2]
-
-params.codebook = [["id":'' ], "codebook.csv"]
-params.segmentation_method = "CELLPOSE"
-
-
 workflow DECODE {
     images = channel.from(params.images)
     n_image_ch = images.map { it ->

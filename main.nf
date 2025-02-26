@@ -8,6 +8,12 @@ params.images = [
     ]],
 ]
 
+params.chs_to_call_peaks = [1, 2]
+
+params.codebook = [["id":'' ], "codebook.csv"]
+params.segmentation_method = "CELLPOSE"
+
+
 workflow RUN_RNASCOPE {
     RNASCOPE()
 }
