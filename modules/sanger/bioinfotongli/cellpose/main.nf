@@ -1,7 +1,6 @@
 process BIOINFOTONGLI_CELLPOSE {
     tag "${meta.id}"
 
-    label "gpu"
     label "medium_mem"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

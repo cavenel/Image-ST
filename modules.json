@@ -7,7 +7,7 @@
         "sanger": {
           "bioinfotongli/cellpose": {
             "branch": "develop",
-            "git_sha": "e1645672655ba32200a0e8abe7456dabdfb3553b",
+            "git_sha": "ea163369ba752578a01fc4b0117fd42018c9b728",
             "installed_by": ["tiled_segmentation"]
           },
           "bioinfotongli/concatenatewkts": {
