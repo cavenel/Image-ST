@@ -12,14 +12,13 @@ from cellpose import core, io, models
 import numpy as np
 from shapely import Polygon, wkt, MultiPolygon
 from glob import glob
-import tifffile
-import zarr
+from get_tile_lib import get_tile
 
 import logging
 
 logging.basicConfig(level=logging.INFO)
 
-VERSION="0.1.1"
+VERSION="0.1.2"
 
 
 def main(
@@ -44,15 +43,8 @@ def main(
     # )
 
     if image.endswith(".tif") or image.endswith(".tiff"):
-        store = tifffile.imread(image, aszarr=True)
-        zgroup = zarr.open(store, mode="r")
-        
-        if isinstance(zgroup, zarr.core.Array):
-            image = np.array(zgroup)
-        else:
-            image = zgroup[resolution_level]
 
-        crop = image[y_min:y_max, x_min:x_max]
+        crop = get_tile(image, x_min, x_max, y_min, y_max, zplane=zs)
     else:
         # This will load the whole slice first and then crop it. So, large memroy footprint
         img = AICSImage(image)
