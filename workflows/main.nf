@@ -28,8 +28,6 @@ workflow DECODE {
     // Contrsuct the spatial data object
     TO_SPATIALDATA(POSTCODE.out.decoded_peaks.combine(TILED_SEGMENTATION.out.wkt, by:0)
         .combine(MICRO_ALIGNER_REGISTRATION.out.image, by:0)
-        .map(it ->
-        [it[0], it[1], it[3], it[4]])
     )
 }
 
@@ -40,8 +38,5 @@ workflow RNASCOPE {
     TILED_SPOTIFLOW(images, params.chs_to_call_peaks)
     TO_SPATIALDATA(TILED_SPOTIFLOW.out.spots_csv.combine(TILED_SEGMENTATION.out.wkt, by:0)
         .combine(images, by:0)
-        .map(it ->
-            [it[0], it[1], it[3], it[4]]
-        )
     )
 }

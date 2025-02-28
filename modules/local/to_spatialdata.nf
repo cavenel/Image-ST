@@ -1,16 +1,8 @@
-VERSION="0.2.2"
-
-params.debug=false
-
 process TO_SPATIALDATA {
     tag "$meta.id"
-    label 'process_low'
-    debug params.debug
-    cache true 
+    label 'process_medium'
 
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "quay.io/bioinfotongli/spatialdata:${VERSION}" :
-        "quay.io/bioinfotongli/spatialdata:${VERSION}" }"
+    container "quay.io/bioinfotongli/spatialdata:0.2.2"
     publishDir params.out_dir + "/spatialdata", mode: 'copy'
 
     input:

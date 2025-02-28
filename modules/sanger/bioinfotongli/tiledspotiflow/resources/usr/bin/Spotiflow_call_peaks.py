@@ -6,8 +6,8 @@
 
 """
 import fire
-from aicsimageio import AICSImage
 from spotiflow.model import Spotiflow
+from img_cropper import slice_and_crop_image
 import csv
 
 
@@ -15,17 +15,11 @@ def main(
         image_path:str, output_name:str, C:int,
         x_min:int, x_max:int, y_min:int, y_max:int,
         model_name:str="general",
-        T:int=0,
         Z:int=0
     ):
-    img = AICSImage(image_path)
-    lazy_one_plane = img.get_image_dask_data(
-        "YX",
-        T=T,
-        C=C,
-        Z=Z
+    crop = slice_and_crop_image(
+        image_path, x_min, x_max, y_min, y_max, Z, C, 0 
     )
-    crop = lazy_one_plane[y_min:y_max, x_min:x_max].squeeze().compute()
     model = Spotiflow.from_pretrained(model_name)
     peaks, details  = model.predict(crop)
 
@@ -42,6 +36,6 @@ def main(
 if __name__ == "__main__":
     options = {
         "run" : main,
-        "version" : "0.0.1"
+        "version" : "0.1.0"
     }
     fire.Fire(options)

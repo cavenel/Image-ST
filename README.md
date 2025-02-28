@@ -17,27 +17,25 @@ Basic run
 ---
 1. Clone the repository
 ```
-git clone -b v0.3.2 https://github.com/cellgeni/Image-ST.git
+git clone https://github.com/cellgeni/Image-ST.git
 ```
 2. Prepare the run.config file *
 ```
 process {
         withName: CELLPOSE {
-                maxForks = 1
                 ext.args = "--channels [0,0]"
                 storeDir = "./output/naive_cellpose_segmentation/"
         }
 
         withName: POSTCODE {
-                memory = {160Gb * task.attempt}
-                ext.args = "--channel_names 'DAPI,Cy5,AF488,Cy3,AF750'"
+                memory = {20Gb * task.attempt}
+                // ext.args = "--channel_names 'DAPI,Cy5,AF488,Cy3,AF750'"
                 storeDir = "./output/PoSTcode_decoding_output"
         }
 
         withName: TO_SPATIALDATA {
                 memory = {20.Gb * task.attempt}
                 ext.args = "--feature_col 'Name' --expansion_in_pixels 30 --save_label_img False"
-                queue = "teramem"
         }
 
         withName: MERGE_OUTLINES {
@@ -50,23 +48,22 @@ process {
         }
 
         withName: BIOINFOTONGLI_TILEDSPOTIFLOW {
-                maxForks = 1
-                memory = {100.Gb * task.attempt}
+                memory = {30.Gb * task.attempt}
                 storeDir = "./output/spotiflow_peaks/"
         }
 
-        withName: Spotiflow_merge_tiled_peaks {
-                memory = {100.Gb * task.attempt}
+        withName: BIOINFOTONGLI_MERGEPEAKS {
+                memory = {50.Gb * task.attempt}
                 storeDir = "./output/spotiflow_peaks/"
         }
 
-        withName: Spotiflow_merge_channels {
-                memory = {100.Gb * task.attempt}
+        withName: BIOINFOTONGLI_CONCATENATEWKTS {
+                memory = {50.Gb * task.attempt}
                 storeDir = "./output/spotiflow_peaks/"
         }
 
         withName: EXTRACT_PEAK_PROFILE {
-                memory = {100.Gb * task.attempt}
+                memory = {50.Gb * task.attempt}
                 storeDir = "./output/peak_profiles/"
         }
 
@@ -78,7 +75,7 @@ process {
 3. Prepare the parameters file (e.g. iss.yaml)
 ```
 images:
-   - ['id': "ISS_exp9",
+   - ['id': "test",
        [
          "cycle1.ome.tiff",
          "cycle2.ome.tiff",
@@ -88,16 +85,17 @@ images:
          "cycle6.ome.tiff",
        ]
      ]
-cell_diameters: [15]
-chs_to_call_peaks: [1,2,3,4,6,7,8,9,11,12,13,14,16,17,18,19,21,22,23,24,26,27,28,29]
+cell_diameters: [30]
+chs_to_call_peaks: [1,2]
 codebook:
-  - ['id': "ISS_exp9", "./codebook.csv", "./dummy.txt"]
+  - ['id': "test", "./codebook.csv", "./dummy.txt"]
+segmentation_method: "CELLPOSE"
 
 out_dir: "./output"
 ```
 4. Run the pipeline
 ```
-nextflow run ./Image-ST/main.nf -profile lsf,singularity -c run.config -params-file iss.yaml -resume
+nextflow run ./Image-ST/main.nf -profile lsf,singularity -c run.config -params-file iss.yaml -entry RUN_DECODING -resume
 ```
 5. Check the output in the specified storeDir.
 
