@@ -4,12 +4,13 @@
 
 import logging
 import tifffile
-import zarr 
+from aicsimageio import AICSImage
+import zarr
 import numpy as np
 
 logging.basicConfig(level=logging.INFO)
 
-def get_tile(image, xmin, xmax, ymin, ymax, channel=0, zplane=0, timepoint=0, resolution_level=0):
+def get_tile_from_tifffile(image, xmin, xmax, ymin, ymax, channel=0, zplane=0, timepoint=0, resolution_level=0):
     store = tifffile.imread(image, aszarr=True)
     zgroup = zarr.open(store, mode="r")
     if isinstance(zgroup, zarr.core.Array):
@@ -49,3 +50,18 @@ def get_tile(image, xmin, xmax, ymin, ymax, channel=0, zplane=0, timepoint=0, re
     
     logging.debug(f"tile shape {tile.shape}")
     return tile
+
+def slice_and_crop_image(image_p, x_min, x_max, y_min, y_max, zs, channels, resolution_level):
+    if image_p.endswith(".tif") or image_p.endswith(".tiff"):
+        crop = get_tile_from_tifffile(image_p, x_min, x_max, y_min, y_max, zplane=zs, resolution_level=resolution_level)
+    else:
+        # This will load the whole slice first and then crop it. So, large memroy footprint
+        img = AICSImage(image_p)
+        ch_ind = channels[0] if len(np.unique(channels)) == 1 else channels
+        lazy_one_plane = img.get_image_dask_data(
+            "ZCYX",
+            T=0, # only one time point is allowed for now
+            C=ch_ind,
+            Z=zs)
+        crop = lazy_one_plane[:, :, y_min:y_max, x_min:x_max].compute()
+    return crop

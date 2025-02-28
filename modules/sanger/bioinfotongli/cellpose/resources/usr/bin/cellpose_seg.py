@@ -6,31 +6,30 @@
 This script will slice the image in XY dimension and save the slices coordinates in json files
 """
 import fire
-from aicsimageio import AICSImage
 import os
 from cellpose import core, io, models
 import numpy as np
 from shapely import Polygon, wkt, MultiPolygon
 from glob import glob
-from get_tile_lib import get_tile
+from img_cropper import slice_and_crop_image
 
 import logging
 
 logging.basicConfig(level=logging.INFO)
 
-VERSION="0.1.2"
+VERSION="0.1.3"
 
 
 def main(
-    image:str,
-    x_min:int, x_max:int, y_min:int, y_max:int,
-    out_dir:str,
-    cell_diameter:int=30,
-    cellpose_model:str="cyto3",
-    zs:list=[0],
-    channels:list=[0, 0],
-    resolution_level:int=0,
-    **cp_params
+        image:str,
+        x_min:int, x_max:int, y_min:int, y_max:int,
+        out_dir:str,
+        cell_diameter:int=30,
+        cellpose_model:str="cyto3",
+        zs:list=[0],
+        channels:list=[0, 0],
+        resolution_level:int=0,
+        **cp_params
     ):
 
     logging.info(f"Loading Cellpose model: {cellpose_model} (GPU: {core.use_gpu()})")
@@ -42,19 +41,9 @@ def main(
     #     chan2_restore=False
     # )
 
-    if image.endswith(".tif") or image.endswith(".tiff"):
-
-        crop = get_tile(image, x_min, x_max, y_min, y_max, zplane=zs)
-    else:
-        # This will load the whole slice first and then crop it. So, large memroy footprint
-        img = AICSImage(image)
-        ch_ind = channels[0] if len(np.unique(channels)) == 1 else channels
-        lazy_one_plane = img.get_image_dask_data(
-            "ZCYX",
-            T=0, # only one time point is allowed for now
-            C=ch_ind,
-            Z=zs)
-        crop = lazy_one_plane[:, :, y_min:y_max, x_min:x_max].compute()
+    crop = slice_and_crop_image(
+        image, x_min, x_max, y_min, y_max, zs, channels, resolution_level
+    )
 
     masks, flows, _, _ = model.eval(
         crop,
