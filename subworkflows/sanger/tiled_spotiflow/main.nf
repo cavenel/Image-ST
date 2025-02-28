@@ -20,7 +20,7 @@ workflow TILED_SPOTIFLOW {
     SPOTIFLOW(images_tiles.combine(images, by:0).combine(chs_to_call_peaks))
     ch_versions = ch_versions.mix(SPOTIFLOW.out.versions.first())
 
-    MERGEPEAKS(SPOTIFLOW.out.peaks.groupTuple(by:[0,1]))
+    MERGEPEAKS(SPOTIFLOW.out.peaks.groupTuple(by:0))
     ch_versions = ch_versions.mix(MERGEPEAKS.out.versions.first())
 
     CONCATENATEWKTS(MERGEPEAKS.out.merged_peaks.groupTuple())
