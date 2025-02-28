@@ -21,6 +21,7 @@ process BIOINFOTONGLI_MERGEPEAKS {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def ch_ind = meta.ch_ind ?: "-1"
+    meta.remove("ch_ind")
     output_name = "${prefix}_merged_peaks_ch_${ch_ind}.wkt"
     """
     merge_overlapping_peaks.py run \
