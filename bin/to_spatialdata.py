@@ -58,7 +58,8 @@ def main(
         image_models_kwargs: Mapping[str, Any] = MappingProxyType({}),
         imread_kwargs: Mapping[str, Any] = MappingProxyType({}),
         save_label_img:bool = False,
-        cell_props:list = ['label', 'area', 'intensity_mean', "centroid", "axis_major_length", "axis_minor_length"]
+        cell_props:list = ['label', 'bbox']
+        # cell_props:list = ['label', 'area', 'intensity_mean', "centroid", "axis_major_length", "axis_minor_length"]
     ):
 
     dapi_image = imread(registered_image, **imread_kwargs)[raw_image_channels_to_save]
@@ -76,7 +77,6 @@ def main(
     elif transcripts.endswith('.tsv'):
         spots = pd.read_csv(transcripts, header=0, sep='\t')[[y_col, x_col, feature_col]]
     elif transcripts.endswith('.wkt'):
-        
         # Assuming that the wkt file contains a multipoint geometry
         with open(transcripts, 'r') as f:
             multispots = from_wkt(f.read())
@@ -110,11 +110,12 @@ def main(
     else:
         lab_img = np.array(cell_labels.data)
     props_dict = regionprops_table(
-        np.squeeze(lab_img).astype(np.int16),
+        np.squeeze(lab_img).astype(np.int32),
         intensity_image=np.array(dapi_image).transpose(1, 2, 0),
         properties=cell_props
     )
     props_df = pd.DataFrame(props_dict)
+    props_df = props_df[props_df['label'] != 0]
     props_df.to_csv(out_name.replace('.sdata', '_cell_props.csv'))
 
     if save_label_img:
