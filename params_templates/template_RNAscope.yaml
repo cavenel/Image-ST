@@ -1,0 +1,8 @@
+images:
+  - ['id': "RNAScope_test",
+      [
+        '/nfs/team283_imaging/0HarmonyStitched/NT_SNP_VAR/fk7_Pool3iMGL_24rsID62_10xrsID_12-08-24__2024-08-12T11_19_31-Measurement 3/mip/fk7_Pool3iMGL_24rsID62_10xrsID_12-08-24_DNA_Anchor_anti_NaK_anti_F-Act_Meas3_A02_F01_mip.ome.tif',
+      ]
+    ]
+cell_diameters: [100]
+chs_to_call_peaks: [1,2,3]

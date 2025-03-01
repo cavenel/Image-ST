@@ -16,7 +16,7 @@ workflow DECODE {
     }
     MICRO_ALIGNER_REGISTRATION(images)
     TILED_SEGMENTATION(MICRO_ALIGNER_REGISTRATION.out.image, params.segmentation_method)
-    TILED_SPOTIFLOW(MICRO_ALIGNER_REGISTRATION.out.image, params.chs_to_call_peaks)
+    TILED_SPOTIFLOW(MICRO_ALIGNER_REGISTRATION.out.image, channel.from(params.chs_to_call_peaks))
     // Run the decoding
     EXTRACT_PEAK_PROFILE(MICRO_ALIGNER_REGISTRATION.out.image.join(TILED_SPOTIFLOW.out.spots_csv))
     codebook = channel.from(params.codebook).map { meta, codebook, readouts ->
