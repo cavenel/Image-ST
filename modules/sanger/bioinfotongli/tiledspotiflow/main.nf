@@ -14,7 +14,6 @@ process BIOINFOTONGLI_TILEDSPOTIFLOW {
 
     script:
     def args = task.ext.args ?: ''
-    meta['ch_ind'] = ch_ind
     output_name = "${meta.id}_ch_${ch_ind}_peaks_Y${y_min}_Y${y_max}_X${x_min}_X${x_max}.csv"
     """
     Spotiflow_call_peaks.py run \
