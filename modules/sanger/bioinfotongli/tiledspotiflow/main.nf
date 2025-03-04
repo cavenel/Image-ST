@@ -9,12 +9,11 @@ process BIOINFOTONGLI_TILEDSPOTIFLOW {
     tuple val(meta), val(x_min), val(y_min), val(x_max), val(y_max), path(image), val(ch_ind)
     
     output:
-    tuple val(meta), path("${output_name}"), emit: peaks
+    tuple val(meta), val(ch_ind), path("${output_name}"), emit: peaks
     path "versions.yml"           , emit: versions
 
     script:
     def args = task.ext.args ?: ''
-    meta["ch_ind"] = ch_ind
     output_name = "${meta.id}_ch_${ch_ind}_peaks_Y${y_min}_Y${y_max}_X${x_min}_X${x_max}.csv"
     """
     Spotiflow_call_peaks.py run \

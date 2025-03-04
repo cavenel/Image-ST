@@ -8,7 +8,7 @@ process BIOINFOTONGLI_MERGEPEAKS {
         'quay.io/bioinfotongli/tiled_spotiflow:0.5.2' }"
 
     input:
-    tuple val(meta), path(csvs)
+    tuple val(meta), val(ch_ind), path(csvs)
 
     output:
     tuple val(meta), path("${output_name}"), emit: merged_peaks
@@ -20,8 +20,6 @@ process BIOINFOTONGLI_MERGEPEAKS {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def ch_ind = meta.ch_ind ?: "-1"
-    meta.remove("ch_ind")
     output_name = "${prefix}_merged_peaks_ch_${ch_ind}.wkt"
     """
     merge_overlapping_peaks.py run \
