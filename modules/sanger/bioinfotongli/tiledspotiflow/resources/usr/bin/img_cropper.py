@@ -27,8 +27,7 @@ def get_tile_from_tifffile(image, xmin, xmax, ymin, ymax, channel=0, zplane=0, t
         dimension_order = [d[0] for d in image.attrs["_ARRAY_DIMENSIONS"]]
         dimension_order = "".join(dimension_order)
 
-    # crop = image[y_min:y_max, x_min:x_max]
-    # print(image.shape)
+    channel += 1 # channel is 0-based in the input
     if dimension_order=="YX":
         tile = image[ymin:ymax, xmin:xmax]
     elif dimension_order=="YXC" or dimension_order=="YXS":
@@ -59,11 +58,10 @@ def slice_and_crop_image(image_p, x_min, x_max, y_min, y_max, zs, channel, resol
     else:
         # This will load the whole slice first and then crop it. So, large memroy footprint
         img = AICSImage(image_p)
-        ch_ind = channels[0] if len(np.unique(channels)) == 1 else channels
         lazy_one_plane = img.get_image_dask_data(
             "ZCYX",
             T=0, # only one time point is allowed for now
-            C=ch_ind,
+            C=channel,
             Z=zs)
         crop = lazy_one_plane[:, :, y_min:y_max, x_min:x_max].compute()
     return crop

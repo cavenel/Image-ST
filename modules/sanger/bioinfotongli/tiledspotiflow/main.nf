@@ -2,8 +2,8 @@ process BIOINFOTONGLI_TILEDSPOTIFLOW {
     tag "${meta.id}"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "quay.io/bioinfotongli/tiled_spotiflow:0.5.2":
-        "quay.io/bioinfotongli/tiled_spotiflow:0.5.2"}"
+        "quay.io/cellgeni/tiled_spotiflow:0.5.4":
+        "quay.io/cellgeni/tiled_spotiflow:0.5.4"}"
 
     input:
     tuple val(meta), val(x_min), val(y_min), val(x_max), val(y_max), path(image), val(ch_ind)
@@ -28,7 +28,7 @@ process BIOINFOTONGLI_TILEDSPOTIFLOW {
     
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bioinfotongli: \$(echo \$(Spotiflow_call_peaks.py version))
+        bioinfotongli: \$(Spotiflow_call_peaks.py version)
     END_VERSIONS
     """
 
@@ -40,7 +40,7 @@ process BIOINFOTONGLI_TILEDSPOTIFLOW {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bioinfotongli: \$(echo \$(Spotiflow_call_peaks.py version))
+        bioinfotongli: \$(Spotiflow_call_peaks.py version)
     END_VERSIONS
     """
 }
