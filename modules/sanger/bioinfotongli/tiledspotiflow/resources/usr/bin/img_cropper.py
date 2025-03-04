@@ -51,9 +51,11 @@ def get_tile_from_tifffile(image, xmin, xmax, ymin, ymax, channel=0, zplane=0, t
     logging.debug(f"tile shape {tile.shape}")
     return tile
 
-def slice_and_crop_image(image_p, x_min, x_max, y_min, y_max, zs, channels, resolution_level):
+def slice_and_crop_image(image_p, x_min, x_max, y_min, y_max, zs, channel, resolution_level):
     if image_p.endswith(".tif") or image_p.endswith(".tiff"):
-        crop = get_tile_from_tifffile(image_p, x_min, x_max, y_min, y_max, zplane=zs, resolution_level=resolution_level)
+        crop = get_tile_from_tifffile(
+            image_p, x_min, x_max, y_min, y_max, zplane=zs, channel=channel, resolution_level=resolution_level, 
+        )
     else:
         # This will load the whole slice first and then crop it. So, large memroy footprint
         img = AICSImage(image_p)

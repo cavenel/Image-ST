@@ -32,7 +32,7 @@ process TO_SPATIALDATA {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        : \$(echo \$(to_spatialdata.py version 2>&1) | sed 's/^.*to_spatialdata.py //; s/Using.*\$//' ))
+        : \$(/opt/conda/bin/python ${workflow.projectDir}/bin/to_spatialdata.py version))
     END_VERSIONS
     """
 
@@ -44,7 +44,7 @@ process TO_SPATIALDATA {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        : \$(echo \$(microaligner --version 2>&1) | sed 's/^.*microaligner //; s/Using.*\$//' ))
+        : \$(/opt/conda/bin/python ${workflow.projectDir}/bin/to_spatialdata.py version))
     END_VERSIONS
     """
 }
