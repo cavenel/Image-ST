@@ -7,7 +7,7 @@
         "sanger": {
           "bioinfotongli/cellpose": {
             "branch": "develop",
-            "git_sha": "98083d53c40b47680e8b4614d53f7a8dfd99a653",
+            "git_sha": "2be815fb4c3ab8da7986b8e122ea1ca0fd0019b5",
             "installed_by": ["tiled_segmentation"]
           },
           "bioinfotongli/concatenatewkts": {
@@ -52,7 +52,7 @@
           },
           "bioinfotongli/tiledspotiflow": {
             "branch": "develop",
-            "git_sha": "e41f0d8dadd2594577f86ce6b604303cb4cf5103",
+            "git_sha": "ca029aae8ccae1516ddb0e6df9653587a48fd5b8",
             "installed_by": ["modules", "tiled_spotiflow"]
           },
           "mergeoutlines": {
