@@ -7,7 +7,7 @@
 """
 import fire
 from spotiflow.model import Spotiflow
-from img_cropper import slice_and_crop_image
+from imagetileprocessor import slice_and_crop_image
 import csv
 
 
