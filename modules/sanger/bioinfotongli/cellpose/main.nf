@@ -4,8 +4,8 @@ process BIOINFOTONGLI_CELLPOSE {
     label "medium_mem"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "quay.io/cellgeni/tiled_cellpose:0.1.1":
-        "quay.io/cellgeni/tiled_cellpose:0.1.1"}"
+        "quay.io/cellgeni/tiled_cellpose:0.1.2":
+        "quay.io/cellgeni/tiled_cellpose:0.1.2"}"
     containerOptions = {
             workflow.containerEngine == "singularity" ? "--cleanenv --nv":
             ( workflow.containerEngine == "docker" ? "--gpus all": null )

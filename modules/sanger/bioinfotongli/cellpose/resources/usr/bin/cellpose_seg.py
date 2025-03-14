@@ -11,7 +11,7 @@ from cellpose import core, io, models
 import numpy as np
 from shapely import Polygon, wkt, MultiPolygon
 from glob import glob
-from img_cropper import slice_and_crop_image
+from imagetileprocessor import slice_and_crop_image
 
 import logging
 
@@ -32,6 +32,10 @@ def main(
         **cp_params
     ):
 
+    crop = slice_and_crop_image(
+        image, x_min, x_max, y_min, y_max, zs, np.array(channels), resolution_level
+    )
+
     logging.info(f"Loading Cellpose model: {cellpose_model} (GPU: {core.use_gpu()})")
     model = models.Cellpose(gpu=core.use_gpu(), model_type=cellpose_model)
     # model = denoise.CellposeDenoiseModel(
@@ -40,10 +44,6 @@ def main(
     #     restore_type="denoise_cyto3",
     #     chan2_restore=False
     # )
-
-    crop = slice_and_crop_image(
-        image, x_min, x_max, y_min, y_max, zs, channels, resolution_level
-    )
 
     masks, flows, _, _ = model.eval(
         crop,
