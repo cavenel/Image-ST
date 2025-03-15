@@ -57,7 +57,7 @@
           },
           "mergeoutlines": {
             "branch": "develop",
-            "git_sha": "ac0c5cc17b27328ca962beff2136ea0028b0e36a",
+            "git_sha": "d0f2372d3f0719d7dff92636036a38e867e9114f",
             "installed_by": ["tiled_segmentation"]
           },
           "postcode": {

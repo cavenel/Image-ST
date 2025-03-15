@@ -1,17 +1,16 @@
 process MERGEOUTLINES {
     tag "$meta.id"
-    label 'process_single'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'quay.io/cellgeni/tiled_cellpose:0.1.1':
-        'quay.io/cellgeni/tiled_cellpose:0.1.1' }"
+        'quay.io/cellgeni/imagetileprocessor:0.1.9':
+        'quay.io/cellgeni/imagetileprocessor:0.1.9' }"
 
     input:
     tuple val(meta), path(outlines)
 
     output:
-    tuple val(meta), path("${prefix}_merged.wkt"), emit: multipoly_wkts
-    tuple val(meta), path("${prefix}_merged.geojson"), emit: multipoly_geojsons, optional: true
+    tuple val(meta), path("${prefix}.wkt"), emit: multipoly_wkts
+    tuple val(meta), path("${prefix}.geojson"), emit: multipoly_geojsons, optional: true
     path "versions.yml"           , emit: versions
 
     when:
@@ -19,28 +18,28 @@ process MERGEOUTLINES {
 
     script:
     def args = task.ext.args ?: ''
-    prefix = task.ext.prefix ?: "${meta.id}"
+    prefix = task.ext.prefix ?: "${meta.id}_merged"
     """
-    merge_wkts.py run \\
-        --sample_id ${prefix} \\
+    merge-polygons \\
+        --wkts $outlines \\
+        --output_prefix "${prefix}" \\
         $args \\
-        $outlines
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        mergeoutlines: \$(merge_wkts.py version)
+        mergeoutlines: \$(merge-polygons --version)
     END_VERSIONS
     """
 
     stub:
     def args = task.ext.args ?: ''
-    prefix = task.ext.prefix ?: "${meta.id}"
+    prefix = task.ext.prefix ?: "${meta.id}_merged"
     """
-    touch ${prefix}_merged.wkt
+    touch ${prefix}.wkt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        mergeoutlines: \$(merge_wkts.py version)
+        mergeoutlines: \$(merge-polygons --version)
     END_VERSIONS
     """
 }
