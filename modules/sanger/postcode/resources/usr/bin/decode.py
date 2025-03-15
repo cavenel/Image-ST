@@ -129,7 +129,12 @@ def decode(
     #     codebook_arr, spot_profile, gene_list, K = prepare_iss(codebook_p, spot_profile_p, **prepare_iss_kwargs)
 
     spot_locations = pd.read_csv(spot_locations_p)
-    spot_locations.columns = ['spot_id', 'y', 'x']
+    if len(spot_locations.columns) == 2:
+        spot_locations["spot_id"] = spot_locations.index
+    elif len(spot_locations.columns) == 3:
+        spot_locations.columns = ['spot_id', 'y', 'x']
+    else:
+        raise ValueError("spot_locations_p should have 2 or 3 columns")
     
     assert spot_locations.shape[0] == spot_profile.shape[0], "Number of spots in spot_locations and spot_profile do not match"
     # Decode using postcode
