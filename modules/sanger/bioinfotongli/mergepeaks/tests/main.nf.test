@@ -17,6 +17,7 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test' ], // meta map
+                    0,
                     [
                         file(params.modules_testdata_base_path + 'mouse_heart_ch_0_peaks_Y0_X0.csv', checkIfExists: true),
                         file(params.modules_testdata_base_path + 'mouse_heart_ch_0_peaks_Y0_X0_.csv', checkIfExists: true),
@@ -44,6 +45,7 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test' ], // meta map
+                    0,
                     [
                         file(params.modules_testdata_base_path + 'mouse_heart_ch_0_peaks_Y0_X0.csv', checkIfExists: true),
                         file(params.modules_testdata_base_path + 'mouse_heart_ch_0_peaks_Y0_X0_.csv', checkIfExists: true),

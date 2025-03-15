@@ -4,8 +4,8 @@ process BIOINFOTONGLI_MERGEPEAKS {
 
     // conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'quay.io/bioinfotongli/tiled_spotiflow:0.5.2':
-        'quay.io/bioinfotongli/tiled_spotiflow:0.5.2' }"
+        'quay.io/cellgeni/tiled_spotiflow:0.5.4-1':
+        'quay.io/cellgeni/tiled_spotiflow:0.5.4-1' }"
 
     input:
     tuple val(meta), val(ch_ind), path(csvs)
