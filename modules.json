@@ -37,7 +37,7 @@
           },
           "bioinfotongli/mergepeaks": {
             "branch": "develop",
-            "git_sha": "68300d4b4f5cd25ff0d9603afeaa58d315862a20",
+            "git_sha": "a2a35af485e485307c2ca17fb6a859bbdce6a8e6",
             "installed_by": ["tiled_spotiflow"]
           },
           "bioinfotongli/microaligner": {

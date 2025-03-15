@@ -4,8 +4,8 @@ process BIOINFOTONGLI_MERGEPEAKS {
 
     // conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'quay.io/cellgeni/tiled_spotiflow:0.5.4-1':
-        'quay.io/cellgeni/tiled_spotiflow:0.5.4-1' }"
+        'quay.io/cellgeni/imagetileprocessor:0.1.7':
+        'quay.io/cellgeni/imagetileprocessor:0.1.7' }"
 
     input:
     tuple val(meta), val(ch_ind), path(csvs)
@@ -22,28 +22,27 @@ process BIOINFOTONGLI_MERGEPEAKS {
     def prefix = task.ext.prefix ?: "${meta.id}"
     output_name = "${prefix}_merged_peaks_ch_${ch_ind}.wkt"
     """
-    merge_overlapping_peaks.py run \
+    merge-peaks run \
+        --output_name ${output_name} \
         ${csvs} \
-        -output_name ${output_name} \
         ${args} \
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bioinfotongli: \$(merge_overlapping_peaks.py version)
+        bioinfotongli: \$(merge-peaks version)
     END_VERSIONS
     """
 
     stub:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def ch_ind = meta.ch_ind ?: "-1"
     output_name = "${prefix}_merged_peaks_ch_${ch_ind}.wkt"
     """
     touch ${output_name}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bioinfotongli: \$(merge_overlapping_peaks.py version)
+        bioinfotongli: \$(merge-peaks version)
     END_VERSIONS
     """
 }
