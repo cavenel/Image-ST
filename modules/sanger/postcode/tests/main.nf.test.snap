@@ -1,0 +1,110 @@
+{
+    "merfish - csv": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "merfish_test"
+                        },
+                        "merfish_test_decoded_spots.csv:md5,73bb8a4215143145560d15e0e8be1bc4"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "versions.yml:md5,74065acdb730aacba1112d6248309b1c"
+                ],
+                "decoded_peaks": [
+                    [
+                        {
+                            "id": "merfish_test"
+                        },
+                        "merfish_test_decoded_spots.csv:md5,73bb8a4215143145560d15e0e8be1bc4"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,74065acdb730aacba1112d6248309b1c"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2025-03-15T22:24:05.303435026"
+    },
+    "iss - csv": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "iss_test"
+                        },
+                        "iss_test_decoded_spots.csv:md5,a02adfd231d1e365c3eadb1d27aeb8ee"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "versions.yml:md5,74065acdb730aacba1112d6248309b1c"
+                ],
+                "decoded_peaks": [
+                    [
+                        {
+                            "id": "iss_test"
+                        },
+                        "iss_test_decoded_spots.csv:md5,a02adfd231d1e365c3eadb1d27aeb8ee"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,74065acdb730aacba1112d6248309b1c"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2025-03-15T22:23:42.014978416"
+    },
+    "stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "merfish_test"
+                        },
+                        "merfish_test_decoded_spots.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "versions.yml:md5,74065acdb730aacba1112d6248309b1c"
+                ],
+                "decoded_peaks": [
+                    [
+                        {
+                            "id": "merfish_test"
+                        },
+                        "merfish_test_decoded_spots.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,74065acdb730aacba1112d6248309b1c"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2025-03-15T22:24:15.897845378"
+    }
+}

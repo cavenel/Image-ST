@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Copyright (c) 2024 Wellcome Sanger Institute
 
 import numpy as np
 import pandas as pd

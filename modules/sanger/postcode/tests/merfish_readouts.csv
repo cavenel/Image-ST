@@ -1,0 +1,10 @@
+AF_488 channel,Cy3 channel,Cy5 Channel
+Readout 2,Readout 1,Readout 3
+Readout 5,Readout 4,Readout 6
+Readout 7,Readout 8,Readout 9
+Readout 11,Readout 12,Readout 10
+Readout 14,Readout 15,Readout 13
+Readout 8,Readout 16,Readout 15
+Anchor1,Anchor2,Nothing
+Nothing,Segmentation,Nothing
+Readout 8,Readout 9,Nothing

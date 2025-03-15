@@ -1,4 +1,4 @@
-// nf-core modules test bioinfotongli/deepcell
+// nf-core modules test bioinfotongli/postcode
 nextflow_process {
 
     name "Test Process POSTCODE"
@@ -9,15 +9,20 @@ nextflow_process {
     tag "modules_sanger"
     tag "POSTCODE"
 
-    test("mouse_heart - tiff") {
+    test("iss - csv") {
+
+        config "./iss.config"
 
         when {
             process {
                 """
                 input[0] = [
-                    [ id:'mouse_heart'],
-                    0, 0, 600, 600,
-                    file(params.modules_testdata_base_path + 'imaging/tiff/mindagap.mouse_heart.wga.tiff', checkIfExists: true),
+                    [ id:'iss_test'],
+                    file(params.modules_testdata_base_path + 'iss_peak_profile_sample.npy', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'iss_peak_locations_sample.csv', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'iss_codebook.csv', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'dummy.txt', checkIfExists: false),
+                    6
                 ]
                 """
             }
@@ -32,7 +37,35 @@ nextflow_process {
 
     }
 
-    test("mouse_heart - tiff - stub") {
+    test("merfish - csv") {
+
+        config "./merfish.config"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'merfish_test'],
+                    file(params.modules_testdata_base_path + 'merfish_peak_profile_sample.npy', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'merfish_peak_locations_sample.csv', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'merfish_codebook.csv', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'merfish_readouts.csv', checkIfExists: true),
+                    9
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("stub") {
 
         options "-stub"
 
@@ -40,9 +73,12 @@ nextflow_process {
             process {
                 """
                 input[0] = [
-                    [ id:'mouse_heart'],
-                    0, 0, 200, 200,
-                    file(params.modules_testdata_base_path + 'imaging/tiff/mindagap.mouse_heart.wga.tiff', checkIfExists: true),
+                    [ id:'merfish_test'],
+                    file(params.modules_testdata_base_path + 'merfish_peak_profile_sample.npy', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'merfish_peak_locations_sample.csv', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'merfish_codebook.csv', checkIfExists: true),
+                    file(params.modules_testdata_base_path + 'merfish_readouts.csv', checkIfExists: true),
+                    7
                 ]
                 """
             }

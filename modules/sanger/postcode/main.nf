@@ -2,8 +2,8 @@ process POSTCODE {
     tag "${meta.id}"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "quay.io/bioinfotongli/postcode:0.1.0":
-        "quay.io/bioinfotongli/postcode:0.1.0"}"
+        "quay.io/bioinfotongli/postcode:0.2.0":
+        "quay.io/bioinfotongli/postcode:0.2.0"}"
 
     input:
     tuple val(meta), file(spot_profile), file(spot_loc), file(codebook), file(readouts), val(R)
