@@ -137,7 +137,11 @@ def decode(
     
     # Reformat output into pandas dataframe
     df_class_names = np.concatenate((gene_list, ['infeasible', 'background', 'nan']))
-    barcodes_0123_str = ["".join(k) for k in codebook_arr[:,0,:].astype(str)]
+    if is_merfish:
+        barcodes_0123_str = ["".join(k) for k in codebook_arr[:,0,:].astype(str)]
+    else:
+        barcodes_0123_str = ["".join(np.argmax(k, axis=0).astype(str)) for k in codebook_arr.astype(str)]
+        # barcodes_0123_str = ["".join(k) for k in codebook_arr.astype(str)]
     # barcodes_0123 = codebook_arr[:,0,:]
     # barcodes_AGCT = np.empty(K, dtype='object')
     # for k in range(K):

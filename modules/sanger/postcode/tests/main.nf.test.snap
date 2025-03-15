@@ -33,7 +33,7 @@
             "nf-test": "0.9.2",
             "nextflow": "24.04.4"
         },
-        "timestamp": "2025-03-15T22:24:05.303435026"
+        "timestamp": "2025-03-15T23:00:48.523789213"
     },
     "iss - csv": {
         "content": [
@@ -43,7 +43,7 @@
                         {
                             "id": "iss_test"
                         },
-                        "iss_test_decoded_spots.csv:md5,a02adfd231d1e365c3eadb1d27aeb8ee"
+                        "iss_test_decoded_spots.csv:md5,96b1c12b06f1b340e803060a5000e6de"
                     ]
                 ],
                 "1": [
@@ -57,7 +57,7 @@
                         {
                             "id": "iss_test"
                         },
-                        "iss_test_decoded_spots.csv:md5,a02adfd231d1e365c3eadb1d27aeb8ee"
+                        "iss_test_decoded_spots.csv:md5,96b1c12b06f1b340e803060a5000e6de"
                     ]
                 ],
                 "versions": [
@@ -69,7 +69,7 @@
             "nf-test": "0.9.2",
             "nextflow": "24.04.4"
         },
-        "timestamp": "2025-03-15T22:23:42.014978416"
+        "timestamp": "2025-03-15T23:00:31.695060821"
     },
     "stub": {
         "content": [
@@ -105,6 +105,6 @@
             "nf-test": "0.9.2",
             "nextflow": "24.04.4"
         },
-        "timestamp": "2025-03-15T22:24:15.897845378"
+        "timestamp": "2025-03-15T23:01:04.320288589"
     }
 }
