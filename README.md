@@ -28,7 +28,7 @@ process {
         }
 
         withName: POSTCODE {
-                memory = {20Gb * task.attempt}
+                memory = {20.Gb * task.attempt}
                 // ext.args = "--channel_names 'DAPI,Cy5,AF488,Cy3,AF750'"
                 storeDir = "./output/PoSTcode_decoding_output"
         }
@@ -65,10 +65,6 @@ process {
         withName: EXTRACT_PEAK_PROFILE {
                 memory = {50.Gb * task.attempt}
                 storeDir = "./output/peak_profiles/"
-        }
-
-        withLabel: gpu {
-                containerOptions = "--nv"
         }
 }
 ```
