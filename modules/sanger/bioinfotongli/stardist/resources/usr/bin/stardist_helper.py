@@ -1,19 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (c) 2025 Wellcome Sanger Institute
-import logging
-import os
 
 import numpy as np
-import tifffile
-import zarr
 from csbdeep.utils import normalize
 from stardist.models import StarDist2D
 from csbdeep.data import Normalizer, normalize_mi_ma
-from aicsimageio import AICSImage
-import matplotlib.pyplot as plt
 import fire
+from imagetileprocessor import slice_and_crop_image
 
+import logging
 
 class MyNormalizer(Normalizer):
         def __init__(self, mi, ma):
@@ -30,36 +26,14 @@ class MyNormalizer(Normalizer):
 logging.basicConfig(level="INFO", format="[%(asctime)s][%(levelname)s] %(message)s")
 
 
-def load_tile(image_path, x_min, x_max, y_min, y_max, DAPI_index, resolution_level):
-    logging.info(f"Reading image from {image_path}")
-    if image_path.endswith(".tif") or image_path.endswith(".tiff"):
-        store = tifffile.imread(image_path, aszarr=True)
-        zgroup = zarr.open(store, mode="r")
-        
-        if isinstance(zgroup, zarr.core.Array):
-            image = np.array(zgroup)
-        else:
-            image = zgroup[resolution_level]
-        crop = image[y_min:y_max, x_min:x_max]
-    else:
-        # This will load the whole slice first and then crop it. So, large memroy footprint
-        img = AICSImage(image)
-        lazy_one_plane = img.get_image_dask_data(
-            "CYX",
-            T=0, # only one time point is allowed for now
-            C=DAPI_index,
-            Z=0)
-        crop = lazy_one_plane[:, y_min:y_max, x_min:x_max].compute()
-    return np.squeeze(crop)
-
 def segment(
     image_path: str,
     x_min:int, x_max:int, y_min:int, y_max:int,
-    resolution_level: str = 0,
+    resolution_level: int = 0,
     model_name: str = '2D_versatile_fluo',
     output_name: str = None,
     DAPI_index:int = 0,
-    **kwargs
+    z:int = 0,
 ):
     """
     Main function to perform image segmentation using tiles.
@@ -76,8 +50,8 @@ def segment(
         image_id (str): The image identification name.
         DAIP_index (int): The index of the DAPI channel.
     """
-    img = load_tile(
-        image_path, x_min, x_max, y_min, y_max, DAPI_index, resolution_level
+    img = slice_and_crop_image(
+        image_path, x_min, x_max, y_min, y_max, channel=np.array([DAPI_index]), zs=np.array([z]), resolution_level=resolution_level
     )
 
     logging.info(f"Loading StarDist2D model '{model_name}'")

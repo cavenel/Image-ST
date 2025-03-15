@@ -1,12 +1,11 @@
 process BIOINFOTONGLI_INSTANSEG {
     tag "$meta.id"
     label 'process_medium'
-    label "gpu"
 
     // conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'quay.io/cellgeni/instanseg:v0.0.1':
-        'quay.io/cellgeni/instanseg:v0.0.1' }"
+        'quay.io/cellgeni/instanseg:v1-0.0.2':
+        'quay.io/cellgeni/instanseg:v1-0.0.2' }"
 
     input:
     tuple val(meta), val(x_min), val(y_min), val(x_max), val(y_max), path(img)

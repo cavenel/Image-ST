@@ -6,7 +6,6 @@
 This script will slice the image in XY dimension and save the slices coordinates in json files
 """
 import fire
-from aicsimageio import AICSImage
 from scipy import ndimage
 from instanseg import InstanSeg
 import cv2
@@ -14,43 +13,10 @@ import numpy as np
 from shapely.geometry import Polygon, MultiPolygon
 from shapely import to_wkt
 from shapely.affinity import translate
-import tifffile as tf
-import zarr
+from imagetileprocessor import slice_and_crop_image
 
 import logging
 logger = logging.getLogger(__name__)
-
-def load_tile(
-        image,
-        x_min, x_max, y_min, y_max,
-        Z=[0],
-        C=[0],
-        T=[0],
-        resolution_level=0):
-    """
-    AICSImage doesn't to lazy chunk loading but loads the whole slice first and then crops it.
-    Tifffile can do lazy loading but one may need to play with the axis order, if it's hypterstack.
-    """
-    if image.endswith(".tif") or image.endswith(".tiff"):
-        store = tf.imread(image, aszarr=True)
-        zgroup = zarr.open(store, mode="r")
-        
-        if isinstance(zgroup, zarr.core.Array):
-            image = np.array(zgroup)
-        else:
-            image = zgroup[resolution_level]
-
-        crop = image[y_min:y_max, x_min:x_max]
-    else:
-        # This will load the whole slice first and then crop it. So, large memroy footprint
-        img = AICSImage(image)
-        lazy_one_plane = img.get_image_dask_data(
-            "ZCYX",
-            T=T,
-            C=C,
-            Z=Z)
-        crop = lazy_one_plane[:, :, y_min:y_max, x_min:x_max].compute()
-    return crop
 
 
 def get_largest_polygon(multi_polygon: MultiPolygon):
@@ -110,12 +76,14 @@ def main(
         output_name: str,
         model: str = "fluorescence_nuclei_and_cells",
         C: list = [0],
-        T: list = [0],
         Z: list = [0],
     ):
     instanseg_fluorescence = InstanSeg(model, verbosity=1)
 
-    crop = load_tile(image_path, x_min, x_max, y_min, y_max, T=T, C=C, Z=Z)
+    crop = slice_and_crop_image(
+        image_path, x_min, x_max, y_min, y_max,
+        channel=np.array([C]), zs=np.array([Z]), resolution_level=0
+    )
 
     labeled_output = instanseg_fluorescence.eval_small_image(
         np.array(crop).astype(np.uint16), None, return_image_tensor=False, target="nuclei",

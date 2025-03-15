@@ -5,10 +5,7 @@
 """
 """
 import fire
-from aicsimageio import AICSImage
-# from deepcell.applications import Mesmer
 from deepcell.applications import NuclearSegmentation
-# from deepcell.applications.mesmer import MODEL_NAME
 import numpy as np
 from pathlib import Path
 import tensorflow as tf
@@ -17,45 +14,11 @@ from shapely import to_wkt
 from shapely.affinity import translate
 from scipy import ndimage
 import cv2
-import tifffile
 import zarr
+from imagetileprocessor import slice_and_crop_image
 
 import logging
 logger = logging.getLogger(__name__)
-
-
-def load_tile(
-        image,
-        x_min, x_max, y_min, y_max,
-        Z=[0],
-        C=[0],
-        T=[0],
-        resolution_level=0,
-        dim_order = "ZCYX"):
-    """
-    AICSImage doesn't to lazy chunk loading but loads the whole slice first and then crops it.
-    Tifffile can do lazy loading but one may need to play with the axis order, if it's hypterstack.
-    """
-    if image.endswith(".tif") or image.endswith(".tiff"):
-        store = tifffile.imread(image, aszarr=True)
-        zgroup = zarr.open(store, mode="r")
-        
-        if isinstance(zgroup, zarr.core.Array):
-            image = np.array(zgroup)
-        else:
-            image = zgroup[resolution_level]
-
-        crop = image[y_min:y_max, x_min:x_max]
-    else:
-        # This will load the whole slice first and then crop it. So, large memroy footprint
-        img = AICSImage(image)
-        lazy_one_plane = img.get_image_dask_data(
-            dim_order,
-            T=T,
-            C=C,
-            Z=Z)
-        crop = lazy_one_plane[:, :, y_min:y_max, x_min:x_max].compute()
-    return crop
 
 
 def get_largest_polygon(multi_polygon: MultiPolygon):
@@ -113,7 +76,6 @@ def main(
         x_min: int, x_max: int, y_min: int, y_max: int,
         output_name: str,
         C: int = 0,
-        T: int = 0,
         Z: int = 0,
     ):
     model_dir = Path.home() / ".deepcell" / "models"
@@ -125,7 +87,9 @@ def main(
     # app = Mesmer(tf.keras.models.load_model(model_path))
     # crop = img.get_image_dask_data("TYXC", Z=Z, T=T, C=C)[:, y_min:y_max, x_min:x_max, :]
 
-    crop = load_tile(image_path, x_min, x_max, y_min, y_max, Z=Z, T=T, C=C, dim_order="TYXC")
+    crop = slice_and_crop_image(
+        image_path, x_min, x_max, y_min, y_max, zs=np.array([Z]), channel=np.array([C]), resolution_level=0
+    )
     if crop.ndim == 2: # special channel setting required by deepcell
         crop = np.expand_dims(crop, axis=[-1, 0])
     segmentation_predictions = app.predict(
