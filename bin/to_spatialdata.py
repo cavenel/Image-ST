@@ -12,8 +12,8 @@ from xarray import DataArray
 from spatialdata.transformations.transformations import Identity
 import pandas as pd
 import anndata
-import spatialdata as sd
-from shapely import from_wkt, MultiPoint, MultiPolygon
+from shapely import from_wkt, from_geojson, MultiPoint, MultiPolygon
+from shapely.geometry.collection import GeometryCollection
 import numpy as np
 from skimage.segmentation import expand_labels
 from skimage.measure import regionprops_table
@@ -27,13 +27,16 @@ logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger(__name__)
 
-VERSION = "0.0.2"
+VERSION = "0.1.0"
 
 
-def load_wkts_as_shapemodel(wkt_file:str):
-    with open(wkt_file, 'r') as f:
-        multipoly = from_wkt(f.read())
-    if isinstance(multipoly, MultiPolygon):
+def load_shapemodel(cells:str):
+    with open(cells, 'r') as f:
+        if cells.endswith('.wkt'):
+            multipoly = from_wkt(f.read())
+        elif cells.endswith('.geojson'):
+            multipoly = from_geojson(f.read())
+    if isinstance(multipoly, MultiPolygon) or isinstance(multipoly, GeometryCollection):
         ids, polys = zip(*{i+1:poly for i, poly in enumerate(list(multipoly.geoms))}.items())
         df = pd.DataFrame({"instance_id":ids, "geometry":polys})
         df["instance_id"] = df["instance_id"].astype(int)
@@ -45,7 +48,7 @@ def load_wkts_as_shapemodel(wkt_file:str):
 
 def main(
         transcripts:str,
-        cells_in_wkt:str,
+        cells:str,
         registered_image:str,
         out_name:str,
         pixelsize:int=1,
@@ -88,7 +91,7 @@ def main(
         raise ValueError('Format not recognized. Please provide a csv, tsv or wkt file')
 
     logger.info("Building cell shapes from wkt file")
-    cell_shape = load_wkts_as_shapemodel(cells_in_wkt)
+    cell_shape = load_shapemodel(cells)
 
     sdata = SpatialData(
         shapes={"cell_shapes": cell_shape},
