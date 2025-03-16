@@ -35,6 +35,9 @@ def main(
     crop = slice_and_crop_image(
         image, x_min, x_max, y_min, y_max, zs, np.array(channels), resolution_level
     )
+    # if z is missing, add it
+    if len(crop.shape) == 3:
+        crop = np.expand_dims(crop, axis=0)
 
     logging.info(f"Loading Cellpose model: {cellpose_model} (GPU: {core.use_gpu()})")
     model = models.Cellpose(gpu=core.use_gpu(), model_type=cellpose_model)
