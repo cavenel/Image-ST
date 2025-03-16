@@ -11,9 +11,10 @@ nextflow_process {
 
     test("iss - csv") {
 
-        config "./iss.config"
-
         when {
+            params {
+                module_args = '--codebook_targer_col L-probe --codebook_code_col code'
+            }
             process {
                 """
                 input[0] = [
@@ -39,9 +40,10 @@ nextflow_process {
 
     test("merfish - csv") {
 
-        config "./merfish.config"
-
         when {
+            params {
+                module_args = '--codebook_targer_col Gene --codebook_code_col Code --coding_col_prefix Readout_*'
+            }
             process {
                 """
                 input[0] = [
@@ -68,8 +70,11 @@ nextflow_process {
     test("stub") {
 
         options "-stub"
-
+        
         when {
+            params {
+                module_args = ''
+            }
             process {
                 """
                 input[0] = [
