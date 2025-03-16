@@ -29,7 +29,6 @@ process {
 
         withName: POSTCODE {
                 memory = {20.Gb * task.attempt}
-                // ext.args = "--channel_names 'DAPI,Cy5,AF488,Cy3,AF750'"
                 storeDir = "./output/PoSTcode_decoding_output"
         }
 
@@ -39,7 +38,7 @@ process {
         }
 
         withName: MERGE_OUTLINES {
-                storeDir = "./output/cellpose_segmentation_merged_wkt/"
+                storeDir = "./output/merged_cellpose_segmentation/"
         }
 
         withName: BIOINFOTONGLI_MICROALIGNER {
@@ -82,10 +81,10 @@ images:
        ]
      ]
 cell_diameters: [30]
-chs_to_call_peaks: [1,2]
+chs_to_call_peaks: [1,2] // channels to call peaks, can be multiple
 codebook:
-  - ['id': "test", "./codebook.csv", "./dummy.txt"]
-segmentation_method: "CELLPOSE"
+  - ['id': "test", "./codebook.csv", "./dummy.txt"] // has to match the meta in `images` variable
+segmentation_method: "CELLPOSE" // or DEEPCELL or STARDIST or INSTANSEG
 
 out_dir: "./output"
 ```
@@ -129,7 +128,7 @@ By following nf-core standard, it is possible to add any parameters to the main 
 An example is
 
 withName: POSTCODE {
-    ext.args = "--channel_names 'DAPI,Cy5,AF488,Cy3,AF750'"
+    ext.args = "--codebook_targer_col L-probe --codebook_code_col code "
 }
 
 3. Cannot download pretrained model for the deep-learning tools (Spotiflow/CellPose)

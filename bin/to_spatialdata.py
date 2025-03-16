@@ -90,7 +90,7 @@ def main(
     else:
         raise ValueError('Format not recognized. Please provide a csv, tsv or wkt file')
 
-    logger.info("Building cell shapes from wkt file")
+    logger.info("Load cell polygons from file")
     cell_shape = load_shapemodel(cells)
 
     sdata = SpatialData(
