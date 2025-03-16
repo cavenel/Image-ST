@@ -6,7 +6,7 @@ process TO_SPATIALDATA {
     publishDir params.out_dir + "/spatialdata", mode: 'copy'
 
     input:
-    tuple val(meta), path(transcripts), path(cells_in_wkt), path(registered_image)
+    tuple val(meta), path(transcripts), path(cells), path(registered_image)
 
     output:
     tuple val(meta), path("${out_name}"), emit: spatialdata
@@ -25,7 +25,7 @@ process TO_SPATIALDATA {
     export NUMBA_CACHE_DIR=/tmp/numba_cache
     /opt/conda/bin/python ${workflow.projectDir}/bin/to_spatialdata.py run \\
         --transcripts ${transcripts} \\
-        --cells_in_wkt ${cells_in_wkt} \\
+        --cells ${cells} \\
         --out_name ${out_name} \\
         --registered_image ${registered_image} \\
         $args
