@@ -9,8 +9,8 @@ process MERGEOUTLINES {
     tuple val(meta), path(outlines)
 
     output:
-    tuple val(meta), path("${prefix}.wkt"), emit: multipoly_wkts
-    tuple val(meta), path("${prefix}.geojson"), emit: multipoly_geojsons, optional: true
+    tuple val(meta), path("${prefix}.wkt"), emit: multipoly_wkts, optional: true
+    tuple val(meta), path("${prefix}.geojson"), emit: multipoly_geojsons
     path "versions.yml"           , emit: versions
 
     when:
