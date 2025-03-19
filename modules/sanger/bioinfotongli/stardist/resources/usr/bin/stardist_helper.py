@@ -8,6 +8,7 @@ from stardist.models import StarDist2D
 from csbdeep.data import Normalizer, normalize_mi_ma
 import fire
 from imagetileprocessor import slice_and_crop_image
+from shapely import wkt, MultiPolygon
 
 import logging
 
@@ -69,16 +70,15 @@ def segment(
     
     # convert cellpose outlines to WTK
     logging.info(f"Converting outlines to WKT format")
-    wkt = []
+    wkts = []
     if coord.shape[0] != 0:    
         for polygon in coord:
-           flat_coords = [(xy[1] + x_min, xy[0] + y_min) for xy in polygon.reshape(-1, 2)]
-           wkt.append(
-                "POLYGON ((" + ", ".join(f"{x} {y}" for x, y in flat_coords + [flat_coords[0]]) + "))"
+            flat_coords = [(xy[1] + x_min, xy[0] + y_min) for xy in polygon.reshape(-1, 2)]
+            wkts.append(
+                wkt.loads("POLYGON ((" + ", ".join(f"{x} {y}" for x, y in flat_coords + [flat_coords[0]]) + "))")
             )
-
         with open(output_name, "wt") as f:
-            f.write("\n".join(wkt))
+            f.write(wkt.dumps(MultiPolygon(wkts)))
     else:
         logging.info("No outlines file found")
         with open(output_name, "wt") as f:
@@ -87,6 +87,6 @@ def segment(
 if __name__ == "__main__":
     options = {
         'run': segment,
-        'version': '0.0.1'
+        'version': '0.0.2'
     }
     fire.Fire(options)
