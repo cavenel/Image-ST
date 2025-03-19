@@ -37,12 +37,12 @@ workflow TILED_SEGMENTATION {
         wkts = DEEPCELL.out.wkts.groupTuple(by:0)
         ch_versions = ch_versions.mix(DEEPCELL.out.versions.first())
     } else {
-        error "Invalid segmentation method: ${method}"
+        error "Invalid segmentation method: ${method}. Expected one of: CELLPOSE, STARDIST, INSTANSEG, DEEPCELL"
     }
     MERGEOUTLINES(wkts)
     ch_versions = ch_versions.mix(MERGEOUTLINES.out.versions.first())
 
     emit:
-    wkt         = MERGEOUTLINES.out.multipoly_geojsons   // channel: [ val(meta), [ geojson ] ]
+    geojson         = MERGEOUTLINES.out.multipoly_geojsons   // channel: [ val(meta), [ geojson ] ]
     versions    = ch_versions                     // channel: [ versions.yml ]
 }

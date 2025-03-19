@@ -26,7 +26,7 @@ workflow DECODE {
     }
     POSTCODE(EXTRACT_PEAK_PROFILE.out.peak_profile.join(codebook).join(n_image_ch))
     // Contrsuct the spatial data object
-    TO_SPATIALDATA(POSTCODE.out.decoded_peaks.combine(TILED_SEGMENTATION.out.wkt, by:0)
+    TO_SPATIALDATA(POSTCODE.out.decoded_peaks.combine(TILED_SEGMENTATION.out.geojson, by:0)
         .combine(MICRO_ALIGNER_REGISTRATION.out.image, by:0)
     )
 }
@@ -36,7 +36,7 @@ workflow RNASCOPE {
     images = channel.from(params.images)
     TILED_SEGMENTATION(images, channel.from(params.segmentation_method))
     TILED_SPOTIFLOW(images, params.chs_to_call_peaks)
-    TO_SPATIALDATA(TILED_SPOTIFLOW.out.spots_csv.combine(TILED_SEGMENTATION.out.wkt, by:0)
+    TO_SPATIALDATA(TILED_SPOTIFLOW.out.spots_csv.combine(TILED_SEGMENTATION.out.geojson, by:0)
         .combine(images, by:0)
     )
 }
