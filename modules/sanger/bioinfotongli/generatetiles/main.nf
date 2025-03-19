@@ -2,8 +2,8 @@ process BIOINFOTONGLI_GENERATETILES {
     tag "${meta.id}"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "quay.io/bioinfotongli/large_image_io:0.0.2":
-        "quay.io/bioinfotongli/large_image_io:0.0.2"}"
+        "quay.io/cellgeni/imagetileprocessor:0.1.9":
+        "quay.io/cellgeni/imagetileprocessor:0.1.9"}"
 
     input:
     tuple val(meta), path(image)
@@ -18,14 +18,14 @@ process BIOINFOTONGLI_GENERATETILES {
     def prefix = task.ext.prefix ?: "${meta.id}"
     output_name = "${prefix}_tile_coords.csv"
     """
-    tile_2D_image.py run \\
+    tile-2d-image run \\
         --image ${image} \\
         --output_name "${output_name}" \\
         ${args}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bioinfotongli: \$(tile_2D_image.py version)
+        bioinfotongli: \$(tile-2d-image version)
     END_VERSIONS
     """
 
@@ -38,7 +38,7 @@ process BIOINFOTONGLI_GENERATETILES {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bioinfotongli: \$(tile_2D_image.py version)
+        bioinfotongli: \$(tile-2d-image version)
     END_VERSIONS
     """
 }
