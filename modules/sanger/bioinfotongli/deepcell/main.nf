@@ -4,8 +4,8 @@ process BIOINFOTONGLI_DEEPCELL {
 
     // conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'quay.io/cellgeni/deepcell:0.12.10-0.0.2':
-        'quay.io/cellgeni/deepcell:0.12.10-0.0.2' }"
+        'quay.io/cellgeni/deepcell:0.12.10-0.0.3':
+        'quay.io/cellgeni/deepcell:0.12.10-0.0.3' }"
 
     input:
     tuple val(meta), val(x_min), val(y_min), val(x_max), val(y_max), path(image)

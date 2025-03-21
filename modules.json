@@ -17,7 +17,7 @@
           },
           "bioinfotongli/deepcell": {
             "branch": "develop",
-            "git_sha": "cd4b39bb9640255e9bb4eb79f1bbb7b3b0e1f02d",
+            "git_sha": "9eb73ca16c2a86fccb327208cb6d061798a615b8",
             "installed_by": ["tiled_segmentation"]
           },
           "bioinfotongli/extractpeakprofile": {
