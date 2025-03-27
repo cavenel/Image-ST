@@ -52,7 +52,7 @@
           },
           "bioinfotongli/tiledspotiflow": {
             "branch": "develop",
-            "git_sha": "acb6d51c5bf2645b83e7f94d035db355359dcd33",
+            "git_sha": "a72f495214d1e970ef9101f78df59820bebb2953",
             "installed_by": ["modules", "tiled_spotiflow"]
           },
           "mergeoutlines": {

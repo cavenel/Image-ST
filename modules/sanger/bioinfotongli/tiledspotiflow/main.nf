@@ -2,8 +2,8 @@ process BIOINFOTONGLI_TILEDSPOTIFLOW {
     tag "${meta.id}"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "quay.io/cellgeni/tiled_spotiflow:0.5.4-1":
-        "quay.io/cellgeni/tiled_spotiflow:0.5.4-1"}"
+        "quay.io/cellgeni/tiled_spotiflow:0.5.4-2":
+        "quay.io/cellgeni/tiled_spotiflow:0.5.4-2"}"
 
     input:
     tuple val(meta), val(x_min), val(y_min), val(x_max), val(y_max), path(image), val(ch_ind)
