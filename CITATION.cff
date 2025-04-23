@@ -4,8 +4,8 @@ authors:
 - family-names: "LI"
   given-names: "Tong"
   orcid: "https://orcid.org/0000-0002-8240-4476"
-title: "A nextflow pipeline to run the end-to-end image-based in-situ sequencing decoding"
-version: 0.0.1
+title: "A nextflow pipeline to run the end-to-end image-based in-situ sequencing decoding and RNAScope-like analysis"
+version: 0.1.1
 date-released: 2024-08-18
 license: Apache-2.0
-url: "https://github.com/BioinfoTongLI/"
+url: "https://github.com/cellgeni/Image-ST"
