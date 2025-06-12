@@ -1,5 +1,5 @@
 process TO_SPATIALDATA {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_medium'
 
     container "quay.io/bioinfotongli/spatialdata:0.2.2"
@@ -12,7 +12,7 @@ process TO_SPATIALDATA {
     tuple val(meta), path("${out_name}"), emit: spatialdata
     tuple val(meta), path("${prefix}_count_matrix.csv"), optional: true
     tuple val(meta), path("${prefix}_cell_props.csv"), optional: true
-    path "versions.yml"           , emit: versions
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -28,7 +28,7 @@ process TO_SPATIALDATA {
         --cells ${cells} \\
         --out_name ${out_name} \\
         --registered_image ${registered_image} \\
-        $args
+        ${args}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
