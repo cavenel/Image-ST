@@ -6,115 +6,83 @@
       "modules": {
         "sanger": {
           "bioinfotongli/cellpose": {
-            "branch": "develop",
+            "branch": "master",
             "git_sha": "8cd4b57d1422030c53af81a451784d245eb9a129",
-            "installed_by": [
-              "tiled_segmentation"
-            ]
+            "installed_by": ["tiled_segmentation"]
           },
           "bioinfotongli/concatenatewkts": {
-            "branch": "develop",
+            "branch": "master",
             "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
-            "installed_by": [
-              "tiled_spotiflow"
-            ]
+            "installed_by": ["tiled_spotiflow"]
           },
           "bioinfotongli/deepcell": {
-            "branch": "develop",
+            "branch": "master",
             "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
-            "installed_by": [
-              "tiled_segmentation"
-            ]
+            "installed_by": ["tiled_segmentation"]
           },
           "bioinfotongli/extractpeakprofile": {
-            "branch": "develop",
+            "branch": "master",
             "git_sha": "5c03291ba1534074fea9b60d946360211ef2d06e",
-            "installed_by": [
-              "modules"
-            ]
+            "installed_by": ["modules"]
           },
           "bioinfotongli/generatetiles": {
-            "branch": "develop",
+            "branch": "master",
             "git_sha": "d85afed49b31c21f032ad9c32716ccf63c846fc9",
-            "installed_by": [
-              "tiled_segmentation",
-              "tiled_spotiflow"
-            ]
+            "installed_by": ["tiled_segmentation", "tiled_spotiflow"]
           },
           "bioinfotongli/instanseg": {
-            "branch": "develop",
+            "branch": "master",
             "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
-            "installed_by": [
-              "tiled_segmentation"
-            ]
+            "installed_by": ["tiled_segmentation"]
           },
           "bioinfotongli/mergepeaks": {
-            "branch": "develop",
+            "branch": "master",
             "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
-            "installed_by": [
-              "tiled_spotiflow"
-            ]
+            "installed_by": ["tiled_spotiflow"]
           },
           "bioinfotongli/microaligner": {
-            "branch": "develop",
+            "branch": "master",
             "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
-            "installed_by": [
-              "microaligner_registration"
-            ]
+            "installed_by": ["microaligner_registration"]
           },
           "bioinfotongli/stardist": {
-            "branch": "develop",
+            "branch": "master",
             "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
-            "installed_by": [
-              "tiled_segmentation"
-            ]
+            "installed_by": ["tiled_segmentation"]
           },
           "bioinfotongli/tiledspotiflow": {
-            "branch": "develop",
+            "branch": "master",
             "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
-            "installed_by": [
-              "modules",
-              "tiled_spotiflow"
-            ]
+            "installed_by": ["modules", "tiled_spotiflow"]
           },
           "mergeoutlines": {
-            "branch": "develop",
+            "branch": "master",
             "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
-            "installed_by": [
-              "tiled_segmentation"
-            ]
+            "installed_by": ["tiled_segmentation"]
           },
           "postcode": {
-            "branch": "develop",
+            "branch": "master",
             "git_sha": "217659616dd99db450d09ceedca83fbebdc72f1e",
-            "installed_by": [
-              "modules"
-            ]
+            "installed_by": ["modules"]
           }
         }
       },
       "subworkflows": {
         "sanger": {
           "microaligner_registration": {
-            "branch": "develop",
+            "branch": "master",
             "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
-            "installed_by": [
-              "subworkflows"
-            ]
+            "installed_by": ["subworkflows"]
           },
           "tiled_segmentation": {
-            "branch": "develop",
+            "branch": "master",
             "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
-            "installed_by": [
-              "subworkflows"
-            ]
+            "installed_by": ["subworkflows"]
           },
           "tiled_spotiflow": {
-            "branch": "develop",
+            "branch": "master",
             "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
-            "installed_by": [
-              "subworkflows"
-            ]
+            "installed_by": ["subworkflows"]
           }
         }
       }
