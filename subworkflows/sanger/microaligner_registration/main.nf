@@ -1,13 +1,13 @@
 #!/usr/bin/env/ nextflow
 
- include { BIOINFOTONGLI_MICROALIGNER } from '../../../modules/sanger/bioinfotongli/microaligner/main'
+include { BIOINFOTONGLI_MICROALIGNER } from '../../../modules/sanger/bioinfotongli/microaligner/main'
 
 params.referece_channel = "DAPI"
 params.reference_cycle = 1
 
 params.debug = true
 
-include { BIOINFOTONGLI_MICROALIGNER as MICROALIGNER_FEATREG; BIOINFOTONGLI_MICROALIGNER as MICROALIGNER_OPTFLOWREG } from '../../../modules/sanger/bioinfotongli/microaligner/main'
+include { BIOINFOTONGLI_MICROALIGNER as MICROALIGNER_FEATREG ; BIOINFOTONGLI_MICROALIGNER as MICROALIGNER_OPTFLOWREG } from '../../../modules/sanger/bioinfotongli/microaligner/main'
 
 
 process GENERATE_FEAT_REG_YAML {
@@ -141,7 +141,6 @@ workflow MICRO_ALIGNER_REGISTRATION {
     ch_versions = ch_versions.mix(MICROALIGNER_OPTFLOWREG.out.versions.first())
 
     emit:
-    image      = MICROALIGNER_OPTFLOWREG.out.registered_image           // channel: [ val(meta), [ image ] ]
-
-    versions = ch_versions                     // channel: [ versions.yml ]
+    image = MICROALIGNER_OPTFLOWREG.out.registered_image // channel: [ val(meta), [ image ] ]
+    versions = ch_versions // channel: [ versions.yml ]
 }

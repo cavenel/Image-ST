@@ -7,57 +7,57 @@
         "sanger": {
           "bioinfotongli/cellpose": {
             "branch": "develop",
-            "git_sha": "da6205de0f59292980e5b91a5db95a3e4e2a543c",
+            "git_sha": "8cd4b57d1422030c53af81a451784d245eb9a129",
             "installed_by": ["tiled_segmentation"]
           },
           "bioinfotongli/concatenatewkts": {
             "branch": "develop",
-            "git_sha": "38765ad9e19d1ab323236c07741d776ffeea32f8",
+            "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
             "installed_by": ["tiled_spotiflow"]
           },
           "bioinfotongli/deepcell": {
             "branch": "develop",
-            "git_sha": "9eb73ca16c2a86fccb327208cb6d061798a615b8",
+            "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
             "installed_by": ["tiled_segmentation"]
           },
           "bioinfotongli/extractpeakprofile": {
             "branch": "develop",
-            "git_sha": "2890d0080b9a08851ae55bdb7632b5264385acc1",
+            "git_sha": "5c03291ba1534074fea9b60d946360211ef2d06e",
             "installed_by": ["modules"]
           },
           "bioinfotongli/generatetiles": {
             "branch": "develop",
-            "git_sha": "e8b41729c12494219a2489a3b674d915415a249d",
+            "git_sha": "d85afed49b31c21f032ad9c32716ccf63c846fc9",
             "installed_by": ["tiled_segmentation", "tiled_spotiflow"]
           },
           "bioinfotongli/instanseg": {
             "branch": "develop",
-            "git_sha": "dd8bf53dc1f1df1a1d78e672621976be18e069b9",
+            "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
             "installed_by": ["tiled_segmentation"]
           },
           "bioinfotongli/mergepeaks": {
             "branch": "develop",
-            "git_sha": "a2a35af485e485307c2ca17fb6a859bbdce6a8e6",
+            "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
             "installed_by": ["tiled_spotiflow"]
           },
           "bioinfotongli/microaligner": {
             "branch": "develop",
-            "git_sha": "1b3911ca039be5074507a4f9f8cd76c08444b583",
+            "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
             "installed_by": ["microaligner_registration"]
           },
           "bioinfotongli/stardist": {
             "branch": "develop",
-            "git_sha": "a648be36a5cbe6127245b702a1f72aa53265e287",
+            "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
             "installed_by": ["tiled_segmentation"]
           },
           "bioinfotongli/tiledspotiflow": {
             "branch": "develop",
-            "git_sha": "a72f495214d1e970ef9101f78df59820bebb2953",
+            "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
             "installed_by": ["modules", "tiled_spotiflow"]
           },
           "mergeoutlines": {
             "branch": "develop",
-            "git_sha": "b49455c3aa78462f858407e9856a5ba520ef92c2",
+            "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
             "installed_by": ["tiled_segmentation"]
           },
           "postcode": {
@@ -71,17 +71,17 @@
         "sanger": {
           "microaligner_registration": {
             "branch": "develop",
-            "git_sha": "0470cd1c31429f2a7f62fd624a7e6b9abfd3902e",
+            "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
             "installed_by": ["subworkflows"]
           },
           "tiled_segmentation": {
             "branch": "develop",
-            "git_sha": "70702b2e889b74a19ceeaae8c852de6d7642c50d",
+            "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
             "installed_by": ["subworkflows"]
           },
           "tiled_spotiflow": {
             "branch": "develop",
-            "git_sha": "157967f42e3e9702717c05983627c272718b78a1",
+            "git_sha": "6c27a28e56b65381e1d4ea7d7de9a1f210844742",
             "installed_by": ["subworkflows"]
           }
         }

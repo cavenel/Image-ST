@@ -1,9 +1,9 @@
 process MERGEOUTLINES {
-    tag "$meta.id"
+    tag "${meta.id}"
 
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'quay.io/cellgeni/imagetileprocessor:0.1.9':
-        'quay.io/cellgeni/imagetileprocessor:0.1.9' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'quay.io/cellgeni/imagetileprocessor:0.1.9'
+        : 'quay.io/cellgeni/imagetileprocessor:0.1.9'}"
 
     input:
     tuple val(meta), path(outlines)
@@ -11,7 +11,7 @@ process MERGEOUTLINES {
     output:
     tuple val(meta), path("${prefix}.wkt"), emit: multipoly_wkts, optional: true
     tuple val(meta), path("${prefix}.geojson"), emit: multipoly_geojsons
-    path "versions.yml"           , emit: versions
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -21,9 +21,9 @@ process MERGEOUTLINES {
     prefix = task.ext.prefix ?: "${meta.id}_merged"
     """
     merge-polygons \\
-        --wkts $outlines \\
+        --wkts ${outlines} \\
         --output_prefix "${prefix}" \\
-        $args \\
+        ${args} \\
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

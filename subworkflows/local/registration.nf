@@ -1,14 +1,14 @@
 #!/usr/bin/env/ nextflow
 
-include { MICRO_ALIGNER_REGISTRATION } from '../subworkflows/sanger/microaligner_registration/main'
+include { MICRO_ALIGNER_REGISTRATION } from '../../subworkflows/sanger/microaligner_registration/main'
 
-VERSION="0.5.1"
+
 process TO_SPATIALDATA {
-    tag "$meta.id"
+    tag "${meta.id}"
 
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "haniffalab/webatlas-pipeline:${VERSION}" :
-        "haniffalab/webatlas-pipeline:${VERSION}" }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? "haniffalab/webatlas-pipeline:0.5.1"
+        : "haniffalab/webatlas-pipeline:0.5.1"}"
     storeDir "${params.out_dir}/spatialdata"
 
     input:
@@ -37,5 +37,5 @@ workflow REGISTER_AS_SPATIALDATA {
 
     emit:
     spatialdata = TO_SPATIALDATA.out.spatialdata
-    tif         = MICRO_ALIGNER_REGISTRATION.out.image
+    tif = MICRO_ALIGNER_REGISTRATION.out.image
 }

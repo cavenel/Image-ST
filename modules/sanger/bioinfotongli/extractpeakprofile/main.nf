@@ -1,13 +1,11 @@
-container_version = "0.1.0"
-
 process BIOINFOTONGLI_EXTRACTPEAKPROFILE {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "quay.io/bioinfotongli/extract_peak_profile:${container_version}":
-        "quay.io/bioinfotongli/extract_peak_profile:${container_version}" }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? "quay.io/bioinfotongli/extract_peak_profile:0.1.0"
+        : "quay.io/bioinfotongli/extract_peak_profile:0.1.0"}"
     publishDir params.out_dir + "/peak_profiles/"
 
     input:
@@ -15,7 +13,7 @@ process BIOINFOTONGLI_EXTRACTPEAKPROFILE {
 
     output:
     tuple val(meta), path("${prefix}.npy"), path("${prefix}_locations.csv"), emit: peak_profile
-    path "versions.yml"           , emit: versions
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -28,7 +26,7 @@ process BIOINFOTONGLI_EXTRACTPEAKPROFILE {
         --image ${image} \\
         --peaks ${peaks} \\
         --stem ${prefix} \\
-        $args \\
+        ${args} \\
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -37,7 +35,6 @@ process BIOINFOTONGLI_EXTRACTPEAKPROFILE {
     """
 
     stub:
-    def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}_peak_profile"
     """
     touch ${prefix}.npy

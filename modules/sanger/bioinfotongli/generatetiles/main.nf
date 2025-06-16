@@ -1,19 +1,18 @@
 process BIOINFOTONGLI_GENERATETILES {
     tag "${meta.id}"
 
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "quay.io/cellgeni/imagetileprocessor:0.1.9":
-        "quay.io/cellgeni/imagetileprocessor:0.1.9"}"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? "quay.io/cellgeni/imagetileprocessor:0.1.9"
+        : "quay.io/cellgeni/imagetileprocessor:0.1.9"}"
 
     input:
     tuple val(meta), path(image)
 
     output:
     tuple val(meta), path("${output_name}"), emit: tile_coords
-    path "versions.yml"           , emit: versions
+    path "versions.yml", emit: versions
 
     script:
-    stem = meta.id
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     output_name = "${prefix}_tile_coords.csv"
@@ -30,7 +29,6 @@ process BIOINFOTONGLI_GENERATETILES {
     """
 
     stub:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     output_name = "${prefix}_tile_coords.csv"
     """
