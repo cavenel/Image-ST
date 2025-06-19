@@ -9,18 +9,72 @@ include { POSTCODE } from '../modules/sanger/postcode/main'
 include { TO_SPATIALDATA } from '../modules/local/to_spatialdata'
 
 
-workflow DECODE {
-    images = channel.from(params.images)
-    n_image_ch = images.map { it ->
+workflow DECODE_PEAKS_FROM_IMAGE_SERIES {
+    take:
+    images
+    segmentation_method
+    chs_to_call_peaks
+    coding_references
+
+    main:
+    n_cycle = images.map { it ->
         [it[0], it[1].size()]
     }
     MICRO_ALIGNER_REGISTRATION(images)
-    TILED_SEGMENTATION(MICRO_ALIGNER_REGISTRATION.out.image, params.segmentation_method)
-    TILED_SPOTIFLOW(MICRO_ALIGNER_REGISTRATION.out.image, channel.from(params.chs_to_call_peaks))
+    EXTRACT_AND_DECODE(
+        MICRO_ALIGNER_REGISTRATION.out.image,
+        segmentation_method,
+        chs_to_call_peaks,
+        coding_references,
+        n_cycle,
+    )
+
+    emit:
+    spatialdata = EXTRACT_AND_DECODE.out.spatialdata // channel: [ val(meta), [ spatialdata ] ]
+}
+
+workflow SIMPLE_PEAK_COUNTING {
+    take:
+    image_stack
+
+    main:
+    TILED_SEGMENTATION(image_stack, channel.from(params.segmentation_method))
+    TILED_SPOTIFLOW(image_stack, params.chs_to_call_peaks)
+    TO_SPATIALDATA(
+        TILED_SPOTIFLOW.out.spots_csv.combine(TILED_SEGMENTATION.out.geojson, by: 0).combine(image_stack, by: 0)
+    )
+
+    emit:
+    spatialdata = TO_SPATIALDATA.out.spatialdata // channel: [ val(meta), [ spatialdata ] ]
+}
+
+workflow REGISTER_AND_PEAK_COUNTING {
+    take:
+    images
+
+    main:
+    MICRO_ALIGNER_REGISTRATION(images)
+    SIMPLE_PEAK_COUNTING(MICRO_ALIGNER_REGISTRATION.out.image)
+
+    emit:
+    spatialdata = SIMPLE_PEAK_COUNTING.out.spatialdata // channel: [ val(meta), [ spatialdata ] ]
+}
+
+workflow EXTRACT_AND_DECODE {
+    take:
+    image_stack
+    segmentation_method
+    chs_to_call_peaks
+    coding_references
+    n_cycle
+
+    main:
+    TILED_SEGMENTATION(image_stack, segmentation_method)
+    TILED_SPOTIFLOW(image_stack, channel.from(chs_to_call_peaks))
     // Run the decoding
     EXTRACT_PEAK_PROFILE(MICRO_ALIGNER_REGISTRATION.out.image.join(TILED_SPOTIFLOW.out.spots_csv))
     codebook = channel
-        .from(params.codebook)
+        .from(coding_references)
         .map { meta, codebook, readouts ->
             [
                 meta,
@@ -28,19 +82,12 @@ workflow DECODE {
                 file(readouts, checkIfExists: false, type: 'file'),
             ]
         }
-    POSTCODE(EXTRACT_PEAK_PROFILE.out.peak_profile.join(codebook).join(n_image_ch))
+    POSTCODE(EXTRACT_PEAK_PROFILE.out.peak_profile.join(codebook).join(n_cycle))
     // Contrsuct the spatial data object
     TO_SPATIALDATA(
         POSTCODE.out.decoded_peaks.combine(TILED_SEGMENTATION.out.geojson, by: 0).combine(MICRO_ALIGNER_REGISTRATION.out.image, by: 0)
     )
-}
 
-
-workflow RNASCOPE {
-    images = channel.from(params.images)
-    TILED_SEGMENTATION(images, channel.from(params.segmentation_method))
-    TILED_SPOTIFLOW(images, params.chs_to_call_peaks)
-    TO_SPATIALDATA(
-        TILED_SPOTIFLOW.out.spots_csv.combine(TILED_SEGMENTATION.out.geojson, by: 0).combine(images, by: 0)
-    )
+    emit:
+    spatialdata = TO_SPATIALDATA.out.spatialdata // channel: [ val(meta), [ spatialdata ] ]
 }
