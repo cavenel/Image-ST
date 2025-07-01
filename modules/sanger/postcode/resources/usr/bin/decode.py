@@ -8,6 +8,7 @@ import fire
 from avg_spot_profile import main as average_spot_profiles
 from decoding_functions import decoding_function, decoding_output_to_dataframe
 import logging
+
 # from prepare_ISS import prepare_iss
 import os
 from codebook_qc import load_codebook, qc_codebook, to_starfish_codebook
@@ -16,7 +17,7 @@ from pathlib import Path
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-VERSION="0.1.0"
+VERSION = "0.1.0"
 
 
 # def ReadPrepCodebook_ISS(codebook_path):
@@ -61,18 +62,18 @@ VERSION="0.1.0"
 
 
 def decode(
-        spot_locations_p: str,
-        spot_profile_p: str,
-        codebook_p: str,
-        out_name: str,
-        readouts_csv: str=None,
-        keep_noises=True,
-        min_prob = 0.95,
-        R:int=None,
-        codebook_targer_col:str='Gene',
-        codebook_code_col:str='code',
-        coding_col_prefix:str='cycle\d_channel\d_+'
-    ) -> pd.DataFrame:
+    spot_locations_p: str,
+    spot_profile_p: str,
+    codebook_p: str,
+    out_name: str,
+    readouts_csv: str = None,
+    keep_noises=True,
+    min_prob=0.95,
+    R: int = None,
+    codebook_targer_col: str = "Gene",
+    codebook_code_col: str = "code",
+    coding_col_prefix: str = "cycle\d_channel\d_+",
+) -> pd.DataFrame:
     """
     Decodes spots using the Postcode algorithm.
 
@@ -97,7 +98,7 @@ def decode(
         codebook,
         target_col=codebook_targer_col,
         code_col=codebook_code_col,
-        is_merfish=is_merfish
+        is_merfish=is_merfish,
     )
     starfish_book.to_json(f"{Path(codebook_p).stem}_starfish_codebook.json")
     codebook_arr = np.array(starfish_book).transpose(0, 2, 1)
@@ -113,12 +114,21 @@ def decode(
         # fine DAPI/Hoechst channel indexes and remove them from the profile
         n_chs_per_cycle = n_ch // R
         coding_mask_pre_cycle = np.ones(n_chs_per_cycle)
-        coding_mask_pre_cycle[0] = 0 # remove DAPI/Hoechst channel
+        coding_mask_pre_cycle[0] = 0  # remove DAPI/Hoechst channel
         coding_ch_mask = np.array(list(coding_mask_pre_cycle) * R, dtype=bool)
-        spot_profile = spot_profile[coding_ch_mask].reshape(R, n_chs_per_cycle - 1, n_spots)
+        spot_profile = spot_profile[coding_ch_mask].reshape(
+            R, n_chs_per_cycle - 1, n_spots
+        )
         spot_profile = spot_profile.transpose(2, 1, 0)
         # np.save(f"{stem}_reshaped_spot_profile.npy", spot_profile)
-        print(spot_profile.shape, "\n", spot_profile[0], type(spot_profile[0]), "\n", spot_profile[0].dtype)
+        print(
+            spot_profile.shape,
+            "\n",
+            spot_profile[0],
+            type(spot_profile[0]),
+            "\n",
+            spot_profile[0].dtype,
+        )
 
     if is_merfish:
         spot_profile, _ = average_spot_profiles(spot_profile, readouts_csv)
@@ -132,41 +142,44 @@ def decode(
     if len(spot_locations.columns) == 2:
         spot_locations["spot_id"] = spot_locations.index
     elif len(spot_locations.columns) == 3:
-        spot_locations.columns = ['spot_id', 'y', 'x']
+        spot_locations.columns = ["spot_id", "y", "x"]
     else:
         raise ValueError("spot_locations_p should have 2 or 3 columns")
-    
-    assert spot_locations.shape[0] == spot_profile.shape[0], "Number of spots in spot_locations and spot_profile do not match"
+
+    assert (
+        spot_locations.shape[0] == spot_profile.shape[0]
+    ), "Number of spots in spot_locations and spot_profile do not match"
     # Decode using postcode
     out = decoding_function(spot_profile, codebook_arr, print_training_progress=False)
-    
+
     # Reformat output into pandas dataframe
-    df_class_names = np.concatenate((gene_list, ['infeasible', 'background', 'nan']))
+    df_class_names = np.concatenate((gene_list, ["infeasible", "background", "nan"]))
     if is_merfish:
-        barcodes_0123_str = ["".join(k) for k in codebook_arr[:,0,:].astype(str)]
+        barcodes_0123_str = ["".join(k) for k in codebook_arr[:, 0, :].astype(str)]
     else:
-        barcodes_0123_str = ["".join(np.argmax(k, axis=0).astype(str)) for k in codebook_arr.astype(str)]
+        barcodes_0123_str = [
+            "".join(np.argmax(k, axis=0).astype(str)) for k in codebook_arr.astype(str)
+        ]
         # barcodes_0123_str = ["".join(k) for k in codebook_arr.astype(str)]
     # barcodes_0123 = codebook_arr[:,0,:]
     # barcodes_AGCT = np.empty(K, dtype='object')
     # for k in range(K):
     #     barcodes_AGCT[k] = ''.join(list(barcodes_0123[k, :].astype(str)))
-    df_class_codes = np.concatenate((barcodes_0123_str, ['NA', '0000', 'NA']))
+    df_class_codes = np.concatenate((barcodes_0123_str, ["NA", "0000", "NA"]))
     decoded_spots_df = decoding_output_to_dataframe(out, df_class_names, df_class_codes)
-    
+
     decoded_df_s = pd.concat([decoded_spots_df, spot_locations], axis=1)
-    decoded_df_s = decoded_df_s[decoded_df_s['Probability']>min_prob]
-    
+    decoded_df_s = decoded_df_s[decoded_df_s["Probability"] > min_prob]
+
     if keep_noises:
         decoded_df_s.to_csv(out_name, index=False)
     else:
         # Remove infeasible and background codes
-        decoded_df_s[~np.isin(decoded_df_s['Name'], ['background', 'infeasible'])].reset_index(drop=True).to_csv(out_name, index=False)
-    
+        decoded_df_s[
+            ~np.isin(decoded_df_s["Name"], ["background", "infeasible"])
+        ].reset_index(drop=True).to_csv(out_name, index=False)
+
 
 if __name__ == "__main__":
-    options = {
-        "run": decode,
-        "version": VERSION 
-    }
+    options = {"run": decode, "version": VERSION}
     fire.Fire(options)
