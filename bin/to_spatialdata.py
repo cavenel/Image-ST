@@ -67,11 +67,11 @@ def main(
     # cell_props:list = ['label', 'area', 'intensity_mean', "centroid", "axis_major_length", "axis_minor_length"]
 ):
 
-    dapi_image = imread(registered_image, **imread_kwargs)[raw_image_channels_to_save]
-    dapi_image = DataArray(dapi_image, dims=("c", "y", "x"))
+    raw_image = imread(registered_image, **imread_kwargs)[raw_image_channels_to_save]
+    raw_image = DataArray(raw_image, dims=("c", "y", "x"))
 
     raw_image_parsed = Image2DModel.parse(
-        dapi_image,
+        raw_image,
         scale_factors=[2, 2, 2, 2] if multiscale_image else None,
         transformations={"global": Identity()},
         **image_models_kwargs,
@@ -107,11 +107,11 @@ def main(
         sdata["cell_shapes"],
         ["y", "x"],
         min_coordinate=[0, 0],
-        max_coordinate=[dapi_image.shape[-2], dapi_image.shape[-1]],
+        max_coordinate=[raw_image.shape[-2], raw_image.shape[-1]],
         target_coordinate_system="global",
         target_unit_to_pixels=1.0,
     )
-    sdata["dapi_image"] = raw_image_parsed
+    sdata["raw_image"] = raw_image_parsed
 
     logger.info("Assigning spots to cells")
     if expansion_in_pixels > 0:
@@ -120,7 +120,7 @@ def main(
         lab_img = np.array(cell_labels.data)
     props_dict = regionprops_table(
         np.squeeze(lab_img).astype(np.int32),
-        intensity_image=np.array(dapi_image).transpose(1, 2, 0),
+        intensity_image=np.array(raw_image).transpose(1, 2, 0),
         properties=cell_props,
     )
     props_df = pd.DataFrame(props_dict)
