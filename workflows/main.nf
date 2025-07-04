@@ -72,7 +72,7 @@ workflow EXTRACT_AND_DECODE {
     TILED_SEGMENTATION(image_stack, segmentation_method)
     TILED_SPOTIFLOW(image_stack, channel.from(chs_to_call_peaks))
     // Run the decoding
-    EXTRACT_PEAK_PROFILE(MICRO_ALIGNER_REGISTRATION.out.image.join(TILED_SPOTIFLOW.out.spots_csv))
+    EXTRACT_PEAK_PROFILE(image_stack.join(TILED_SPOTIFLOW.out.spots_csv))
     codebook = channel
         .from(coding_references)
         .map { meta, codebook, readouts ->
@@ -85,7 +85,7 @@ workflow EXTRACT_AND_DECODE {
     POSTCODE(EXTRACT_PEAK_PROFILE.out.peak_profile.join(codebook).join(n_cycle))
     // Contrsuct the spatial data object
     TO_SPATIALDATA(
-        POSTCODE.out.decoded_peaks.combine(TILED_SEGMENTATION.out.geojson, by: 0).combine(MICRO_ALIGNER_REGISTRATION.out.image, by: 0)
+        POSTCODE.out.decoded_peaks.combine(TILED_SEGMENTATION.out.geojson, by: 0).combine(image_stack, by: 0)
     )
 
     emit:
