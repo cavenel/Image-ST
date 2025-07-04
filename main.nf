@@ -39,7 +39,7 @@ workflow RUN_DECODING_IMAGE_SERIES {
 
 workflow RUN_DECODING_IMAGE_STACK {
     image_stack = channel.from(params.image_stack)
-    n_cycle = params.n_cycle_int ?: image_stack.map { it -> [it[0], params.n_cycle_int] }
+    n_cycle = params.n_cycle_int ? channel.from(params.n_cycle_int) : image_stack.map { it -> [it[0], params.n_cycle_int] }
     EXTRACT_AND_DECODE(
         image_stack,
         params.segmentation_method,
