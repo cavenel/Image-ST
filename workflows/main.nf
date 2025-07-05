@@ -5,7 +5,7 @@ include { MICRO_ALIGNER_REGISTRATION } from '../subworkflows/sanger-cellgeni/mic
 include { TILED_SEGMENTATION } from '../subworkflows/sanger-cellgeni/tiled_segmentation/main'
 include { TILED_SPOTIFLOW } from '../subworkflows/sanger-cellgeni/tiled_spotiflow/main'
 include { IMAGING_EXTRACTPEAKPROFILE as EXTRACT_PEAK_PROFILE } from '../modules/sanger-cellgeni/imaging/extractpeakprofile/main'
-include { POSTCODE } from '../modules/sanger-cellgeni/imaging/postcode/main'
+include { IMAGING_POSTCODE as POSTCODE } from '../modules/sanger-cellgeni/imaging/postcode/main'
 include { TO_SPATIALDATA } from '../modules/local/to_spatialdata'
 
 
