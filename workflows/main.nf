@@ -2,10 +2,10 @@
 
 include { REGISTER_AS_SPATIALDATA } from '../subworkflows/local/registration'
 include { MICRO_ALIGNER_REGISTRATION } from '../subworkflows/sanger-cellgeni/microaligner_registration/main'
-include { TILED_SEGMENTATION } from '../subworkflows/sanger/tiled_segmentation/main'
-include { TILED_SPOTIFLOW } from '../subworkflows/sanger/tiled_spotiflow/main'
+include { TILED_SEGMENTATION } from '../subworkflows/sanger-cellgeni/tiled_segmentation/main'
+include { TILED_SPOTIFLOW } from '../subworkflows/sanger-cellgeni/tiled_spotiflow/main'
 include { IMAGING_EXTRACTPEAKPROFILE as EXTRACT_PEAK_PROFILE } from '../modules/sanger-cellgeni/imaging/extractpeakprofile/main'
-include { POSTCODE } from '../modules/sanger/postcode/main'
+include { POSTCODE } from '../modules/sanger-cellgeni/imaging/postcode/main'
 include { TO_SPATIALDATA } from '../modules/local/to_spatialdata'
 
 
