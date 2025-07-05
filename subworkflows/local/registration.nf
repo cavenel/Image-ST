@@ -1,6 +1,6 @@
 #!/usr/bin/env/ nextflow
 
-include { MICRO_ALIGNER_REGISTRATION } from '../../subworkflows/sanger/microaligner_registration/main'
+include { MICRO_ALIGNER_REGISTRATION } from '../../subworkflows/sanger-cellgeni/microaligner_registration/main'
 
 
 process TO_SPATIALDATA {
