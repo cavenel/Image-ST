@@ -47,7 +47,7 @@
           },
           "imaging/microaligner": {
             "branch": "main",
-            "git_sha": "2e1a368e71d947afb2d4be6efc3c5d24d7925dc3",
+            "git_sha": "dbed639cc5fc21e568581b172aa3d3476f6074f4",
             "installed_by": ["microaligner_registration"]
           },
           "imaging/postcode": {
