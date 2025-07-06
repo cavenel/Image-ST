@@ -70,7 +70,7 @@ def decode(
     keep_noises=True,
     min_prob=0.95,
     R: int = None,
-    codebook_targer_col: str = "Gene",
+    codebook_target_col: str = "Gene",
     codebook_code_col: str = "code",
     coding_col_prefix: str = "cycle\d_channel\d_+",
 ) -> pd.DataFrame:
@@ -91,12 +91,12 @@ def decode(
     Returns:
         pd.DataFrame: A pandas DataFrame containing the decoded spots and their locations.
     """
-    is_merfish = os.path.getsize(readouts_csv) != 0
+    is_merfish = readouts_csv and os.path.getsize(readouts_csv) != 0
     codebook = load_codebook(codebook_p, codebook_code_col)
     qc_codebook(codebook, codebook_code_col, coding_col_prefix)
     starfish_book = to_starfish_codebook(
         codebook,
-        target_col=codebook_targer_col,
+        target_col=codebook_target_col,
         code_col=codebook_code_col,
         is_merfish=is_merfish,
     )
