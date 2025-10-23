@@ -7,7 +7,7 @@
         "sanger-cellgeni": {
           "imaging/cellpose": {
             "branch": "main",
-            "git_sha": "16d631eb9cd8180d6381c609374fbf3f52f4dfda",
+            "git_sha": "af522da819006c943b90c662ae727c112abefea7",
             "installed_by": ["tiled_segmentation"]
           },
           "imaging/concatenatewkts": {
