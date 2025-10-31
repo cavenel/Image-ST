@@ -4,8 +4,8 @@ process IMAGING_MERGEPEAKS {
 
     // conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? 'quay.io/cellgeni/imagetileprocessor:0.1.13'
-        : 'quay.io/cellgeni/imagetileprocessor:0.1.13'}"
+        ? 'quay.io/cellgeni/imagetileprocessor:0.1.16'
+        : 'quay.io/cellgeni/imagetileprocessor:0.1.16'}"
 
     input:
     tuple val(meta), val(ch_ind), path(csvs)
