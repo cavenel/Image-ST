@@ -70,6 +70,7 @@ def decode(
     keep_noises=True,
     min_prob=0.95,
     R: int = None,
+    starting_cycle: int = None,
     codebook_target_col: str = "Gene",
     codebook_code_col: str = "code",
     coding_col_prefix: str = "cycle\d_channel\d_+",
@@ -106,7 +107,11 @@ def decode(
     K = len(starfish_book.target)
 
     spot_profile = np.load(spot_profile_p)
-
+    # Keep R channels from spot_profile if provided
+    if starting_cycle is not None:
+        spot_profile = spot_profile[starting_cycle * 5:, :]
+    if R:
+        spot_profile = spot_profile[:R * 5, :]
     if len(spot_profile.shape) == 2 and R:
         # if the spot_profile is two dimensional, it is assumed that the spot_profile is in
         # the shape of (n_channel*n_cycle, n_spot). Then reshape it.

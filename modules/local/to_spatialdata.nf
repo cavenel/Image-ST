@@ -6,7 +6,7 @@ process TO_SPATIALDATA {
     publishDir params.out_dir + "/spatialdata", mode: 'copy'
 
     input:
-    tuple val(meta), path(transcripts), path(cells), path(registered_image)
+    tuple val(meta), path(transcripts), path(extra_transcripts), path(cells), path(registered_image)
 
     output:
     tuple val(meta), path("${out_name}"), emit: spatialdata
@@ -20,14 +20,18 @@ process TO_SPATIALDATA {
     script:
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"
+    def raw_image_channels_to_save = params.segmentation_channel ? "--raw_image_channels_to_save=[${params.segmentation_channel}]" : ''
+
     out_name = "${prefix}.sdata"
     """
     export NUMBA_CACHE_DIR=/tmp/numba_cache
     /opt/conda/bin/python ${workflow.projectDir}/bin/to_spatialdata.py run \\
         --transcripts ${transcripts} \\
+        --extra_transcripts ${extra_transcripts} \\
         --cells ${cells} \\
         --out_name ${out_name} \\
         --registered_image ${registered_image} \\
+        ${raw_image_channels_to_save} \\
         ${args}
 
     cat <<-END_VERSIONS > versions.yml

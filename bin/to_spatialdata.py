@@ -50,6 +50,7 @@ def load_shapemodel(cells: str):
 
 def main(
     transcripts: str,
+    extra_transcripts: str,
     cells: str,
     registered_image: str,
     out_name: str,
@@ -78,10 +79,10 @@ def main(
     )
 
     if transcripts.endswith(".csv"):
-        spots = pd.read_csv(transcripts, header=0, sep=",")[[y_col, x_col, feature_col]]
+        spots = pd.read_csv(transcripts, header=0, sep=",")[[y_col, x_col, feature_col, "Probability"]]
     elif transcripts.endswith(".tsv"):
         spots = pd.read_csv(transcripts, header=0, sep="\t")[
-            [y_col, x_col, feature_col]
+            [y_col, x_col, feature_col, "Probability"]
         ]
     elif transcripts.endswith(".wkt"):
         # Assuming that the wkt file contains a multipoint geometry
@@ -95,6 +96,27 @@ def main(
         spots[feature_col] = "spot"
     else:
         raise ValueError("Format not recognized. Please provide a csv, tsv or wkt file")
+
+    if extra_transcripts is not None:
+        if extra_transcripts.endswith(".csv"):
+            extra_spots = pd.read_csv(extra_transcripts, header=0, sep=",")[[y_col, x_col, feature_col, "Probability"]]
+        elif extra_transcripts.endswith(".tsv"):
+            extra_spots = pd.read_csv(extra_transcripts, header=0, sep="\t")[
+                [y_col, x_col, feature_col, "Probability"]
+            ]
+        elif extra_transcripts.endswith(".wkt"):
+            # Assuming that the wkt file contains a multipoint geometry
+            with open(extra_transcripts, "r") as f:
+                multispots = from_wkt(f.read())
+            if not isinstance(multispots, MultiPoint):
+                raise ValueError("Please provide a wkt file with multipoint geometry")
+            extra_spots = pd.DataFrame(
+                [(geom.y, geom.x) for geom in multispots.geoms], columns=[y_col, x_col]
+            )
+            extra_spots[feature_col] = "spot"
+        else:
+            raise ValueError("Format not recognized. Please provide a csv, tsv or wkt file")
+        spots = pd.concat([spots, extra_spots], axis=0).reset_index(drop=True)
 
     logger.info("Load cell polygons from file")
     cell_shape = load_shapemodel(cells)
