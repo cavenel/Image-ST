@@ -1,3 +1,5 @@
+params.segmentation_channel = 0
+
 process IMAGING_CELLPOSE {
     tag "${meta.id}"
 
@@ -21,7 +23,9 @@ process IMAGING_CELLPOSE {
     script:
     prefix = "${meta.id}-${x_min}_${y_min}_${x_max}_${y_max}-diam_${cell_diameter}"
     def args = task.ext.args ?: ''
+    def channels = params.segmentation_channel ? "--channels=[${params.segmentation_channel},${params.segmentation_channel}]" : ''
     """
+
     cellpose_seg.py run \
         --image ${image} \
         --x_min ${x_min} \
@@ -30,6 +34,7 @@ process IMAGING_CELLPOSE {
         --y_max ${y_max} \
         --cell_diameter ${cell_diameter} \
         --out_dir "${prefix}" \
+        ${channels}
         ${args}
 
     cat <<-END_VERSIONS > versions.yml
