@@ -150,7 +150,7 @@ def main(
     count_matrix["num_spots"] = spots.shape[0]
     count_matrix.to_csv(out_name.replace(".sdata", "_count_matrix.csv"))
 
-    props_df_intersect = props_df[props_df["label"].isin(count_matrix.index)]
+    props_df_intersect = props_df.set_index("label").reindex(count_matrix.index)
 
     logger.info("Construct anndata object")
     adata = anndata.AnnData(X=count_matrix.values, obs=props_df_intersect)
