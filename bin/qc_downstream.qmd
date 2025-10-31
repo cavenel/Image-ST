@@ -1,0 +1,276 @@
+---
+title: "ISS - Quality Control and Downstream Analysis"
+format:
+    nf-core-html: default
+jupyter: python3
+---
+
+```{python}
+#| tags: [parameters]
+#| echo: false
+
+# Input file paths (to be set by the nf-core pipeline)
+input_sdata = "data/sdata.zarr"
+artifact_dir = "artifacts"
+```
+
+```{python}
+#| echo: false
+
+# Ignore warnings for cleaner reports
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
+import logging
+logging.getLogger("root").setLevel(logging.CRITICAL)
+logging.getLogger("pyvips").setLevel(logging.CRITICAL)
+logging.getLogger("ome_zarr.reader").setLevel(logging.CRITICAL)
+
+import os
+import pandas as pd
+import json
+import matplotlib.pyplot as plt
+import seaborn as sns
+import scanpy as sc
+import spatialdata
+import spatialdata_plot
+import tissuumaps_helper
+from spatialdata import get_centroids, to_polygons
+from points2regions import Points2Regions
+import numpy as np
+
+plt.rcParams["figure.figsize"] = (7, 7)
+```
+
+```{python}
+#| echo: false
+
+sdata = spatialdata.read_zarr(input_sdata)
+
+sdata["table"] = spatialdata.match_table_to_element(sdata, "cell_labels", table_name='table')
+
+# Remove background variables from gene matrix
+sdata["table"] = sdata["table"][:, ~sdata["table"].var_names.isin(["background", "infeasible", "nan", "num_cells", "num_spots"])]
+adata = sdata["table"]
+
+# Basic QC metrics
+try:
+    sc.pp.calculate_qc_metrics(adata, percent_top=(10, 20, 50, 150), inplace=True)
+except:
+    sc.pp.calculate_qc_metrics(adata, percent_top=None, inplace=True)
+
+# Remove existing area columns to avoid duplication
+for col in adata.obs.columns:
+    if col.startswith("cell_area") or col.startswith("nucleus_area"):
+        del adata.obs[col]
+
+# Convert segmentation masks to polygons
+sdata["cell_shapes_exp"] = to_polygons(sdata["cell_labels"])
+
+# Add cell and nucleus area
+adata.obs = adata.obs.merge(
+    sdata["cell_shapes_exp"].geometry.area.rename("cell_area"),
+    left_on="instance_id", right_index=True, how="left"
+)
+adata.obs = adata.obs.merge(
+    sdata["cell_shapes"].geometry.area.rename("nucleus_area"),
+    left_on="instance_id", right_index=True, how="left"
+)
+```
+
+
+## PostCode Spot Decoding Summary
+
+Summary of the number of decoded, background, infeasible, and nan spots.
+
+```{python}
+transcripts = sdata["transcripts"].compute()
+
+# Count spot status
+transcript_counts = transcripts['Name'].value_counts().reset_index()
+transcript_counts.columns = ['Name', 'count']
+transcript_counts['status'] = transcript_counts['Name'].apply(
+    lambda x: 'decoded' if x not in ['infeasible', 'background', 'nan'] else x
+)
+transcript_counts = transcript_counts.groupby('status')['count'].sum().reset_index().sort_values(by='count', ascending=False)
+
+# Bar plot
+ax = transcript_counts.plot.bar(
+    x='status',
+    y='count',
+    legend=False,
+    color=['green' if x=='decoded' else 'red' for x in transcript_counts['status']],
+    title='PoSTcode spot counts by status',
+    figsize=(7,4),
+)
+ax.bar_label(ax.containers[0])
+plt.tight_layout()
+```
+
+
+## Top and Bottom Expressed Genes
+
+```{python}
+# Remove non-decoded spots
+transcripts = transcripts[~transcripts["Name"].isin(["background", "infeasible", "nan"])]
+transcripts["Name"] = transcripts["Name"].astype("category").cat.remove_unused_categories()
+
+# Top 25
+top25_genes = transcripts["Name"].value_counts().index[:25]
+plt.figure(figsize=(7,5))
+ax = transcripts["Name"].value_counts().loc[top25_genes].plot(kind='bar', title="Top 25 Genes by Total Spots")
+ax.bar_label(ax.containers[0], rotation=90, padding=5)
+plt.tight_layout()
+
+# Bottom 25
+bottom25_genes = transcripts["Name"].value_counts().index[-25:]
+plt.figure(figsize=(7,5))
+ax = transcripts["Name"].value_counts().loc[bottom25_genes].plot(kind='bar', title="Bottom 25 Genes by Total Spots")
+ax.bar_label(ax.containers[0], rotation=90, padding=5)
+plt.tight_layout()
+```
+
+
+## Quality Control Distributions
+
+We visualize distributions for total transcript counts, gene counts, and cell/nucleus areas.
+
+```{python}
+fig, axs = plt.subplots(2, 2, figsize=(7, 7))
+
+sns.histplot(adata.obs["total_counts"], ax=axs[0][0], discrete=True)
+axs[0][0].set_title("Total transcripts per cell")
+
+sns.histplot(adata.obs["n_genes_by_counts"], ax=axs[0][1], discrete=True)
+axs[0][1].set_title("Unique transcripts per cell")
+
+sns.histplot(adata.obs["cell_area"], ax=axs[1][0])
+axs[1][0].set_title("Cell area")
+
+sns.histplot(adata.obs["nucleus_area"]/adata.obs["cell_area"], ax=axs[1][1])
+axs[1][1].set_title("Nucleus to cell area ratio")
+
+plt.tight_layout()
+```
+
+
+## Filtering, Normalization, and Clustering
+
+We filter low-quality cells and genes, normalize, perform PCA, compute neighbors, and cluster using Leiden.
+
+```{python}
+adata = sdata["table"]
+n_genes_before = adata.n_vars
+n_cells_before = adata.n_obs
+
+sc.pp.filter_cells(adata, min_counts=-1)
+sc.pp.filter_genes(adata, min_cells=-1)
+
+n_genes_after = adata.n_vars
+n_cells_after = adata.n_obs
+
+print(f"Number of genes filtered out: {n_genes_before - n_genes_after}")
+print(f"Number of cells filtered out: {n_cells_before - n_cells_after}")
+
+sc.pp.pca(adata)
+sc.pp.neighbors(adata)
+
+# Clustering at multiple resolutions
+for resolution in [0.1, 0.2, 0.5, 1.0]:
+    cluster_key = f"leiden_{resolution}"
+    sc.tl.leiden(adata, resolution=resolution, key_added=cluster_key)
+    adata.obs[cluster_key] = adata.obs[cluster_key].astype("category")
+    nb_cat = len(adata.obs[cluster_key].cat.categories)
+    print (f"Leiden with resolution {resolution}: {nb_cat} clusters")
+    if nb_cat < 100:
+        #try:
+        sdata.pl.render_images().pl.render_labels(color=cluster_key).pl.show(title=cluster_key, figsize=(7.5,7.5), colorbar=False)
+        #except:
+        #    pass
+# Normalization and dimensionality reduction
+try:
+    sc.pp.normalize_total(adata, inplace=True)
+    sc.pp.log1p(adata)
+    sc.tl.umap(adata)
+except:
+    pass
+```
+
+
+## UMAP Visualization
+
+```{python}
+try:
+    fig,ax = plt.subplots(2, 2, figsize=(7, 7))
+
+    sc.pl.umap(adata,color=["total_counts"],size=2,show=False,ax=ax[0][0], legend_loc=None)
+    sc.pl.umap(adata,color=["n_genes_by_counts"],size=2,show=False,ax=ax[0][1], legend_loc=None)
+    sc.pl.umap(adata,color=["leiden_0.2"],size=2,show=False,ax=ax[1][0], legend_loc=None)
+    sc.pl.umap(adata,color=["cell_area"],size=2,show=False,ax=ax[1][1], legend_loc=None)
+
+    plt.tight_layout()
+    plt.show()
+except:
+    pass
+```
+
+
+## Spatial Clustering with Points2Regions
+
+We perform spatial clustering on cell centroids using the Points2Regions algorithm.
+
+```{python}
+centroids = get_centroids(sdata["cell_shapes"])
+df_centroids = centroids.compute()
+df_centroids["instance_id"] = df_centroids.index + 1
+
+df_leiden = adata.obs[["leiden_0.5", "instance_id"]]
+df_centroids = df_centroids.merge(df_leiden, on="instance_id", how="left").dropna(subset=["leiden_0.5"])
+
+try:
+    p2r = Points2Regions(
+        df_centroids[['x', 'y']], 
+        df_centroids['leiden_0.5'].astype(int), 
+        pixel_width=7, 
+        pixel_smoothing=40
+    )
+    p2r.fit(num_clusters=15)
+    df_centroids['Points2Regions_cluster'] = p2r.predict(output='marker').astype(int)
+
+    # Merge back to obs
+    if "Points2Regions_cluster" in sdata.table.obs.keys():
+        del sdata.table.obs["Points2Regions_cluster"]
+    adata.obs = adata.obs.merge(
+        df_centroids[['instance_id', 'Points2Regions_cluster']],
+        on='instance_id', how='left'
+    )
+
+    adata.obs["Points2Regions_cluster"] = adata.obs["Points2Regions_cluster"].astype("category")
+
+    #sdata.delete_element_from_disk("table")
+    #sdata.write_element("table", input_sdata)
+
+    #try:
+    sdata.pl.render_images().pl.render_labels(color="Points2Regions_cluster").pl.show(title="Points2Regions clustering", figsize=(7.5,7.5), colorbar=False)
+    #except:
+    #    pass
+except:
+    pass
+
+```
+
+
+```{python}
+#| echo: false
+sdata_extended, tmap_file = tissuumaps_helper.spatialdata_to_tissuumaps(
+    sdata,
+    elements={
+        "images": sdata.images,
+        "shapes": sdata.shapes,
+        "tables": sdata.tables,
+        "points": sdata.points,
+    },
+    output_folder=os.path.join(artifact_dir,"tissuumaps"),
+    coordinate_system="pixel",
+    layers={}
+)
+```

@@ -6,6 +6,7 @@ include { TILED_SEGMENTATION } from '../subworkflows/sanger-cellgeni/tiled_segme
 include { TILED_SPOTIFLOW } from '../subworkflows/sanger-cellgeni/tiled_spotiflow/main'
 include { IMAGING_EXTRACTPEAKPROFILE as EXTRACT_PEAK_PROFILE } from '../modules/sanger-cellgeni/imaging/extractpeakprofile/main'
 include { IMAGING_POSTCODE as POSTCODE } from '../modules/sanger-cellgeni/imaging/postcode/main'
+include { QC_DOWNSTREAM } from '../subworkflows/local/qc_downstream/main'
 include { TO_SPATIALDATA } from '../modules/local/to_spatialdata'
 
 
@@ -88,6 +89,12 @@ workflow EXTRACT_AND_DECODE {
         POSTCODE.out.decoded_peaks.combine(TILED_SEGMENTATION.out.geojson, by: 0).combine(image_stack, by: 0)
     )
 
+    QC_DOWNSTREAM(TO_SPATIALDATA.out.spatialdata)
+    
     emit:
     spatialdata = TO_SPATIALDATA.out.spatialdata // channel: [ val(meta), [ spatialdata ] ]
+    qc_html = QC_DOWNSTREAM.out.qc_html // channel: [ val(meta), path(qc_report) ]
+    qc_nb = QC_DOWNSTREAM.out.qc_nb // channel: [ meta, qmd ]
+    qc_params = QC_DOWNSTREAM.out.qc_params // channel: [ meta, yml ]
+    tissuumaps = QC_DOWNSTREAM.out.tissuumaps // channel: [ path to folder ]
 }
