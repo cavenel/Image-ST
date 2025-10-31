@@ -53,7 +53,7 @@ def main(
 
     masks, flows, _, _ = model.eval(
         crop,
-        channels=channels,
+        channels=[0,0],
         diameter=cell_diameter,
         channel_axis=1,
         z_axis=0,
